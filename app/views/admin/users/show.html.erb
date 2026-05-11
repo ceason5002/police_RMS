@@ -8,7 +8,7 @@
 %>
 
 <div class="page-header">
-  <h1><%= @user.email %></h1>
+  <h1><%= @user.login_id %></h1>
   <div style="display:flex;gap:8px;">
     <%= link_to "Edit", edit_admin_user_path(@user), class: "btn btn-primary" %>
     <%= link_to "Back", admin_users_path, class: "btn btn-secondary" %>
@@ -22,8 +22,8 @@
   </div>
   <dl class="detail-grid">
     <div class="detail-field">
-      <dt>Email</dt>
-      <dd><%= @user.email %></dd>
+      <dt>ID</dt>
+      <dd><%= @user.login_id %></dd>
     </div>
     <div class="detail-field">
       <dt>Role</dt>

@@ -12,8 +12,9 @@
 
       <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
         <div style="margin-bottom:16px;">
-          <%= f.label :email, style: "display:block;font-size:13px;font-weight:500;color:#0A2540;margin-bottom:6px;" %>
-          <%= f.email_field :email, autofocus: true, autocomplete: "email",
+          <%= f.label :login_id, "ID", style: "display:block;font-size:13px;font-weight:500;color:#0A2540;margin-bottom:6px;" %>
+          <%= f.text_field :login_id, autofocus: true, autocomplete: "off",
+              placeholder: "e.g. M1234",
               style: "width:100%;padding:9px 12px;border:1px solid #E3E8EF;border-radius:6px;font-size:14px;outline:none;box-sizing:border-box;" %>
         </div>
 

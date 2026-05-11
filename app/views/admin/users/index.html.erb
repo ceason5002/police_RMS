@@ -8,7 +8,7 @@
     <table class="rms-table">
       <thead>
         <tr>
-          <th class="col-primary">Email</th>
+          <th class="col-primary">ID</th>
           <th>Role</th>
           <th>Linked Officer</th>
           <th>Active</th>
@@ -18,7 +18,7 @@
       <tbody>
         <% @users.each do |user| %>
           <tr>
-            <td class="col-primary"><%= user.email %></td>
+            <td class="col-primary"><%= user.login_id %></td>
             <td>
               <%
                 role_badge = case user.role
@@ -52,7 +52,7 @@
                     class: "btn btn-sm #{user.active? ? 'btn-secondary' : 'btn-primary'}" %>
               <%= button_to "Delete", admin_user_path(user), method: :delete,
                     class: "btn btn-danger btn-sm",
-                    data: { confirm: "Delete user #{user.email}? This cannot be undone." } %>
+                    data: { confirm: "Delete user #{user.login_id}? This cannot be undone." } %>
             </td>
           </tr>
         <% end %>

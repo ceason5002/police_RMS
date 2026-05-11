@@ -1,7 +1,7 @@
 class Admin::UsersController < Admin::BaseController
   before_action :set_user, only: %i[show edit update destroy toggle_active]
 
-  def index  = @users = User.includes(:officer).order(:email)
+  def index  = @users = User.includes(:officer).order(:login_id)
   def show;  end
   def new    = render(:new, locals: { user: User.new })
   def edit;  end
@@ -10,7 +10,7 @@ class Admin::UsersController < Admin::BaseController
     @user = User.new(user_params)
     @user.password = SecureRandom.hex(12) unless user_params[:password].present?
     if @user.save
-      audit("created", @user, details: "Role: #{@user.role}")
+      audit("created", @user, details: "ID: #{@user.login_id}, Role: #{@user.role}")
       redirect_to admin_users_path, notice: "User created. They can reset their password via login page."
     else
       render :new, locals: { user: @user }, status: :unprocessable_entity
@@ -43,5 +43,5 @@ class Admin::UsersController < Admin::BaseController
   private
 
   def set_user    = @user = User.find(params[:id])
-  def user_params = params.expect(user: [:email, :password, :password_confirmation, :role, :officer_id, :active])
+  def user_params = params.expect(user: [:login_id, :password, :password_confirmation, :role, :officer_id, :active])
 end

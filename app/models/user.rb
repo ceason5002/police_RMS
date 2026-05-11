@@ -7,8 +7,12 @@ class User < ApplicationRecord
   belongs_to :officer, optional: true
   has_many :audit_logs, foreign_key: :user_id
 
+  validates :login_id, presence: true, uniqueness: { case_sensitive: false },
+            format: { with: /\A[A-Za-z]\d{4}\z/, message: "must be one letter followed by 4 numbers (e.g. I1234)" }
   validates :role, inclusion: { in: ROLES }, allow_blank: false
+
   before_validation :set_default_role
+  before_validation :sync_email_from_login_id
 
   scope :active, -> { where(active: true) }
 
@@ -21,7 +25,7 @@ class User < ApplicationRecord
   end
 
   def display_name
-    officer.present? ? "#{officer.first_name} #{officer.last_name}" : email
+    officer.present? ? "#{officer.first_name} #{officer.last_name}" : login_id
   end
 
   private
@@ -29,5 +33,9 @@ class User < ApplicationRecord
   def set_default_role
     self.role ||= "patrol_officer"
     self.active = true if active.nil?
+  end
+
+  def sync_email_from_login_id
+    self.email = "#{login_id.downcase}@policerms.local" if login_id.present?
   end
 end

@@ -286,7 +286,7 @@ end
 # ── 9. Admin User ─────────────────────────────────────────────────────────────
 puts "Seeding admin user..."
 User.create!(
-  email:    "admin@policerms.local",
+  login_id: "M1234",
   password: "Admin1234!",
   password_confirmation: "Admin1234!",
   role:     "admin",
@@ -305,4 +305,4 @@ puts "  #{Unit.count}      units"
 puts "  #{CrimeCase.count} cases"
 puts "  #{User.count}      users"
 puts ""
-puts "Admin login: admin@policerms.local / Admin1234!"
+puts "Admin login: M1234 / Admin1234!"
