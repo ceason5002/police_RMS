@@ -1,0 +1,41 @@
+<div style="min-height:100vh;background:#0A2540;display:flex;align-items:center;justify-content:center;">
+  <div style="width:100%;max-width:400px;padding:0 20px;">
+    <div style="text-align:center;margin-bottom:32px;">
+      <div style="color:white;font-size:22px;font-weight:700;letter-spacing:-0.4px;">Police RMS</div>
+      <div style="color:rgba(255,255,255,0.5);font-size:14px;margin-top:6px;">Sign in to your account</div>
+    </div>
+
+    <div style="background:white;border-radius:12px;padding:32px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+      <% if alert.present? %>
+        <div class="flash flash-alert" style="margin-bottom:20px;"><%= alert %></div>
+      <% end %>
+
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+        <div style="margin-bottom:16px;">
+          <%= f.label :email, style: "display:block;font-size:13px;font-weight:500;color:#0A2540;margin-bottom:6px;" %>
+          <%= f.email_field :email, autofocus: true, autocomplete: "email",
+              style: "width:100%;padding:9px 12px;border:1px solid #E3E8EF;border-radius:6px;font-size:14px;outline:none;box-sizing:border-box;" %>
+        </div>
+
+        <div style="margin-bottom:20px;">
+          <%= f.label :password, style: "display:block;font-size:13px;font-weight:500;color:#0A2540;margin-bottom:6px;" %>
+          <%= f.password_field :password, autocomplete: "current-password",
+              style: "width:100%;padding:9px 12px;border:1px solid #E3E8EF;border-radius:6px;font-size:14px;outline:none;box-sizing:border-box;" %>
+        </div>
+
+        <% if devise_mapping.rememberable? %>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
+            <%= f.check_box :remember_me %>
+            <%= f.label :remember_me, style: "font-size:13px;color:#425466;" %>
+          </div>
+        <% end %>
+
+        <%= f.submit "Sign In", style: "width:100%;background:#635BFF;color:white;border:none;padding:10px;border-radius:6px;font-size:14px;font-weight:500;cursor:pointer;" %>
+      <% end %>
+
+      <div style="margin-top:16px;text-align:center;">
+        <%= render "devise/shared/links" %>
+      </div>
+    </div>
+  </div>
+</div>

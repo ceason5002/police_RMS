@@ -1,0 +1,56 @@
+<div class="page-header">
+  <h1>Edit User</h1>
+  <%= link_to "Back", admin_users_path, class: "btn btn-secondary" %>
+</div>
+
+<div class="form-card">
+  <%= form_with model: [:admin, @user], local: true do |f| %>
+    <% if @user.errors.any? %>
+      <div class="error-box">
+        <strong><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</strong>
+        <ul>
+          <% @user.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div>
+      <%= f.label :email %>
+      <%= f.email_field :email, autocomplete: "off" %>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px;">
+      <div>
+        <%= f.label :password, "New Password" %>
+        <%= f.password_field :password, autocomplete: "new-password", placeholder: "Leave blank to keep current" %>
+        <p style="font-size:12px;color:#9CA3AF;margin-top:4px;">Leave blank to keep existing password.</p>
+      </div>
+      <div>
+        <%= f.label :password_confirmation, "Confirm New Password" %>
+        <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px;">
+      <div>
+        <%= f.label :role %>
+        <%= f.select :role,
+              User::ROLES.map { |r| [r.humanize, r] },
+              { include_blank: "Select Role" } %>
+      </div>
+      <div>
+        <%= f.label :officer_id, "Linked Officer" %>
+        <%= f.select :officer_id,
+              Officer.active.order(:last_name).map { |o| [o.full_name, o.id] },
+              { include_blank: "None" } %>
+      </div>
+    </div>
+
+    <div style="margin-top:28px;display:flex;gap:10px;">
+      <%= f.submit "Update User", class: "btn btn-primary" %>
+      <%= link_to "Cancel", admin_users_path, class: "btn btn-secondary" %>
+    </div>
+  <% end %>
+</div>

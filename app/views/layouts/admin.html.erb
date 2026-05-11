@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Admin — Police RMS" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= yield :head %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+  <body style="margin:0;display:flex;flex-direction:column;min-height:100vh;background:#F6F9FC;">
+
+    <div style="display:flex;flex:1;">
+      <!-- Sidebar -->
+      <aside style="width:240px;min-height:100vh;background:#0A2540;position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;z-index:100;">
+        <div style="padding:20px 20px 12px;border-bottom:1px solid rgba(255,255,255,0.08);">
+          <div style="color:white;font-weight:700;font-size:15px;letter-spacing:-0.3px;">Police RMS</div>
+          <div style="color:rgba(255,255,255,0.4);font-size:11px;margin-top:2px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;">Admin Panel</div>
+        </div>
+
+        <nav style="flex:1;padding:12px 10px;overflow-y:auto;">
+          <%= admin_nav_link "🏠", "Dashboard",       admin_root_path %>
+
+          <div style="color:rgba(255,255,255,0.3);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;padding:16px 10px 6px;">Cases</div>
+          <%= admin_nav_link "📁", "Cases",           admin_crime_cases_path %>
+          <%= admin_nav_link "📋", "Incident Reports",admin_incidents_path %>
+
+          <div style="color:rgba(255,255,255,0.3);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;padding:16px 10px 6px;">Personnel</div>
+          <%= admin_nav_link "👮", "Officers",        admin_officers_path %>
+          <%= admin_nav_link "🏢", "Units",           admin_units_path %>
+          <%= admin_nav_link "👥", "Suspects & Victims", admin_people_path %>
+
+          <div style="color:rgba(255,255,255,0.3);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;padding:16px 10px 6px;">System</div>
+          <%= admin_nav_link "🔑", "User Access",     admin_users_path %>
+          <%= admin_nav_link "📜", "Audit Log",       admin_audit_logs_path %>
+        </nav>
+
+        <div style="padding:16px;border-top:1px solid rgba(255,255,255,0.08);">
+          <div style="color:rgba(255,255,255,0.6);font-size:12px;margin-bottom:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><%= current_user.display_name %></div>
+          <div style="display:flex;gap:8px;">
+            <%= link_to "Main Site", root_path, style: "color:rgba(255,255,255,0.5);font-size:11px;text-decoration:none;" %>
+            <span style="color:rgba(255,255,255,0.2);">·</span>
+            <%= link_to "Sign Out", destroy_user_session_path, data: { turbo_method: :delete }, style: "color:rgba(255,255,255,0.5);font-size:11px;text-decoration:none;" %>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main content -->
+      <div style="margin-left:240px;flex:1;display:flex;flex-direction:column;min-height:100vh;">
+        <% if notice.present? %>
+          <div style="background:#D3F9E8;border-bottom:1px solid #A7F3C6;padding:10px 28px;font-size:13px;color:#0D6E49;font-weight:500;"><%= notice %></div>
+        <% end %>
+        <% if alert.present? %>
+          <div style="background:#FFE4E8;border-bottom:1px solid #FCA5A5;padding:10px 28px;font-size:13px;color:#9B1C2E;font-weight:500;"><%= alert %></div>
+        <% end %>
+        <main style="flex:1;padding:32px 36px;">
+          <%= yield %>
+        </main>
+      </div>
+    </div>
+
+  </body>
+</html>

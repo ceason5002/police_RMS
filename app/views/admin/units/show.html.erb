@@ -1,0 +1,60 @@
+<div class="page-header">
+  <h1><%= @unit.name %></h1>
+  <div style="display:flex;gap:8px;">
+    <%= link_to "Edit", edit_admin_unit_path(@unit), class: "btn btn-primary" %>
+    <%= link_to "Back", admin_units_path, class: "btn btn-secondary" %>
+  </div>
+</div>
+
+<div class="detail-card">
+  <div class="detail-card-header">
+    <h2>Unit Details</h2>
+    <span class="badge badge-blue"><%= @unit.unit_type %></span>
+  </div>
+  <dl class="detail-grid">
+    <div class="detail-field">
+      <dt>Name</dt>
+      <dd style="font-weight:600;"><%= @unit.name %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>Type</dt>
+      <dd><span class="badge badge-blue"><%= @unit.unit_type %></span></dd>
+    </div>
+    <div class="detail-field span-full">
+      <dt>Description</dt>
+      <dd style="white-space:pre-wrap;font-weight:400;line-height:1.7;"><%= @unit.description.presence || "—" %></dd>
+    </div>
+  </dl>
+</div>
+
+<div class="table-card" style="margin-top:24px;">
+  <div style="padding:16px 20px;border-bottom:1px solid #E3E8EF;">
+    <h2 style="margin:0;font-size:16px;font-weight:600;">Officers (<%= @officers.count %>)</h2>
+  </div>
+  <% if @officers.any? %>
+    <table class="rms-table">
+      <thead>
+        <tr>
+          <th>Badge #</th>
+          <th class="col-primary">Name</th>
+          <th>Rank</th>
+          <th class="col-actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @officers.each do |officer| %>
+          <tr>
+            <td style="font-family:monospace;font-weight:600;"><%= officer.badge_number %></td>
+            <td class="col-primary"><%= officer.full_name %></td>
+            <td><span class="badge badge-blue"><%= officer.rank %></span></td>
+            <td class="col-actions">
+              <%= link_to "View", admin_officer_path(officer), class: "btn btn-secondary btn-sm" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p style="color:#9CA3AF;text-align:center;padding:40px 0;">No officers assigned to this unit.</p>
+  <% end %>
+</div>

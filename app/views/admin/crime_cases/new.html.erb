@@ -1,0 +1,52 @@
+<div class="page-header">
+  <h1>New Case</h1>
+  <%= link_to "Back", admin_crime_cases_path, class: "btn btn-secondary" %>
+</div>
+
+<div class="form-card">
+  <%= form_with model: [:admin, crime_case], local: true do |f| %>
+    <% if crime_case.errors.any? %>
+      <div class="error-box">
+        <strong><%= pluralize(crime_case.errors.count, "error") %> prohibited this case from being saved:</strong>
+        <ul>
+          <% crime_case.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+      <div>
+        <%= f.label :case_number, "Case Number" %>
+        <%= f.text_field :case_number, placeholder: "e.g. CR-2024-0001" %>
+      </div>
+      <div>
+        <%= f.label :status %>
+        <%= f.select :status, CrimeCase::STATUSES.map { |s| [s, s] }, { include_blank: "Select Status" } %>
+      </div>
+    </div>
+
+    <div style="margin-top:20px;">
+      <%= f.label :title %>
+      <%= f.text_field :title, placeholder: "Brief descriptive title" %>
+    </div>
+
+    <div style="margin-top:20px;">
+      <%= f.label :lead_officer_id, "Lead Officer" %>
+      <%= f.select :lead_officer_id,
+            Officer.active.order(:last_name).map { |o| [o.full_name, o.id] },
+            { include_blank: "None" } %>
+    </div>
+
+    <div style="margin-top:20px;">
+      <%= f.label :description %>
+      <%= f.text_area :description, rows: 5, placeholder: "Case description and background information…" %>
+    </div>
+
+    <div style="margin-top:28px;display:flex;gap:10px;">
+      <%= f.submit "Create Case", class: "btn btn-primary" %>
+      <%= link_to "Cancel", admin_crime_cases_path, class: "btn btn-secondary" %>
+    </div>
+  <% end %>
+</div>

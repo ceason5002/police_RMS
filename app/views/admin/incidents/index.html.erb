@@ -1,0 +1,92 @@
+<div class="page-header">
+  <h1>Incident Reports</h1>
+</div>
+
+<div class="table-card" style="margin-bottom:16px;padding:16px 20px;">
+  <%= form_with url: admin_incidents_path, method: :get, local: true, style: "display:flex;align-items:center;gap:12px;flex-wrap:wrap;" do |f| %>
+    <%= f.select :status,
+          [["Open", "Open"], ["Under Investigation", "Under Investigation"], ["Closed", "Closed"]],
+          { include_blank: "All Statuses" },
+          class: "btn btn-secondary btn-sm", style: "font-weight:400;" %>
+    <%= f.select :incident_type,
+          [
+            "Assault", "Burglary", "Disorderly Conduct", "Domestic Violence",
+            "Drug Offense", "Fraud", "Homicide", "Missing Person",
+            "Motor Vehicle Theft", "Robbery", "Theft", "Traffic Accident",
+            "Trespassing", "Vandalism", "Other"
+          ].map { |t| [t, t] },
+          { include_blank: "All Types" },
+          class: "btn btn-secondary btn-sm", style: "font-weight:400;" %>
+    <label style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;cursor:pointer;">
+      <%= f.check_box :flagged, { checked: params[:flagged] == "1" }, "1", "0" %>
+      Flagged only
+    </label>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <label style="font-size:13px;font-weight:500;">From</label>
+      <%= f.date_field :date_from, value: params[:date_from], style: "font-size:13px;padding:6px 10px;border:1px solid #D1D5DB;border-radius:6px;" %>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <label style="font-size:13px;font-weight:500;">To</label>
+      <%= f.date_field :date_to, value: params[:date_to], style: "font-size:13px;padding:6px 10px;border:1px solid #D1D5DB;border-radius:6px;" %>
+    </div>
+    <%= f.submit "Filter", class: "btn btn-primary btn-sm" %>
+    <%= link_to "Clear", admin_incidents_path, class: "btn btn-secondary btn-sm" %>
+  <% end %>
+</div>
+
+<div class="table-card">
+  <% if @incidents.any? %>
+    <table class="rms-table">
+      <thead>
+        <tr>
+          <th>Report #</th>
+          <th class="col-primary">Type</th>
+          <th>Status</th>
+          <th>Location</th>
+          <th style="text-align:center;">Flag</th>
+          <th>Occurred</th>
+          <th class="col-actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @incidents.each do |incident| %>
+          <tr>
+            <td style="font-family:monospace;font-weight:600;"><%= incident.report_number %></td>
+            <td class="col-primary"><%= incident.incident_type %></td>
+            <td>
+              <%
+                inc_badge = case incident.status
+                            when "Open"                then "badge-green"
+                            when "Under Investigation" then "badge-yellow"
+                            when "Closed"             then "badge-gray"
+                            else "badge-gray"
+                            end
+              %>
+              <span class="badge <%= inc_badge %>"><%= incident.status %></span>
+            </td>
+            <td style="font-size:13px;color:#6B7280;">
+              <%= [incident.city, incident.state].select(&:present?).join(", ").presence || "—" %>
+            </td>
+            <td style="text-align:center;">
+              <% if incident.flagged? %>
+                <span style="color:#E11D48;font-size:16px;" title="<%= incident.flagged_reason %>">&#9873;</span>
+              <% end %>
+            </td>
+            <td style="color:#6B7280;font-size:13px;white-space:nowrap;">
+              <%= incident.occurred_at&.strftime("%m/%d/%Y %H:%M") %>
+            </td>
+            <td class="col-actions">
+              <%= link_to "View", admin_incident_path(incident), class: "btn btn-secondary btn-sm" %>
+              <%= button_to incident.flagged? ? "Unflag" : "Flag",
+                    toggle_flag_admin_incident_path(incident),
+                    method: :patch,
+                    class: "btn btn-sm #{incident.flagged? ? 'btn-secondary' : 'btn-danger'}" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p style="color:#9CA3AF;text-align:center;padding:40px 0;">No incidents found matching your filters.</p>
+  <% end %>
+</div>

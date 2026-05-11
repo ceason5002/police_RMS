@@ -1,0 +1,65 @@
+<div class="page-header">
+  <h1>Cases</h1>
+  <%= link_to "New Case", new_admin_crime_case_path, class: "btn btn-primary" %>
+</div>
+
+<div class="table-card" style="margin-bottom:16px;padding:16px 20px;">
+  <%= form_with url: admin_crime_cases_path, method: :get, local: true, style: "display:flex;align-items:center;gap:12px;flex-wrap:wrap;" do |f| %>
+    <%= f.select :status,
+          CrimeCase::STATUSES.map { |s| [s, s] },
+          { include_blank: "All Statuses" },
+          class: "btn btn-secondary btn-sm", style: "font-weight:400;" %>
+    <%= f.select :officer_id,
+          Officer.order(:last_name).map { |o| [o.full_name, o.id] },
+          { include_blank: "All Officers" },
+          class: "btn btn-secondary btn-sm", style: "font-weight:400;" %>
+    <%= f.submit "Filter", class: "btn btn-primary btn-sm" %>
+    <%= link_to "Clear", admin_crime_cases_path, class: "btn btn-secondary btn-sm" %>
+  <% end %>
+</div>
+
+<div class="table-card">
+  <% if @cases.any? %>
+    <table class="rms-table">
+      <thead>
+        <tr>
+          <th>Case #</th>
+          <th class="col-primary">Title</th>
+          <th>Status</th>
+          <th>Lead Officer</th>
+          <th>Incidents</th>
+          <th>Created</th>
+          <th class="col-actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @cases.each do |c| %>
+          <tr>
+            <td style="font-family:monospace;font-weight:600;"><%= c.case_number %></td>
+            <td class="col-primary"><%= c.title %></td>
+            <td>
+              <%
+                badge = case c.status
+                        when "Open"                then "badge-green"
+                        when "Under Investigation" then "badge-yellow"
+                        when "Closed"              then "badge-gray"
+                        when "Cold"                then "badge-blue"
+                        else "badge-gray"
+                        end
+              %>
+              <span class="badge <%= badge %>"><%= c.status %></span>
+            </td>
+            <td><%= c.lead_officer&.full_name || "—" %></td>
+            <td style="text-align:center;"><%= c.incidents.count %></td>
+            <td style="color:#6B7280;font-size:13px;"><%= c.created_at.strftime("%m/%d/%Y") %></td>
+            <td class="col-actions">
+              <%= link_to "View", admin_crime_case_path(c), class: "btn btn-secondary btn-sm" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p style="color:#9CA3AF;text-align:center;padding:40px 0;">No cases found.</p>
+  <% end %>
+</div>

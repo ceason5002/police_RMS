@@ -1,0 +1,103 @@
+<div class="page-header">
+  <h1><%= @officer.full_name %></h1>
+  <div style="display:flex;gap:8px;">
+    <%= link_to "Edit", edit_admin_officer_path(@officer), class: "btn btn-primary" %>
+    <%= link_to "Back", admin_officers_path, class: "btn btn-secondary" %>
+  </div>
+</div>
+
+<div class="detail-card">
+  <div class="detail-card-header">
+    <h2>Officer Details</h2>
+    <% if @officer.active? %>
+      <span class="badge badge-green">Active</span>
+    <% else %>
+      <span class="badge badge-red">Inactive</span>
+    <% end %>
+  </div>
+  <dl class="detail-grid">
+    <div class="detail-field">
+      <dt>Badge Number</dt>
+      <dd style="font-family:monospace;font-weight:600;"><%= @officer.badge_number %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>Rank</dt>
+      <dd><span class="badge badge-blue"><%= @officer.rank %></span></dd>
+    </div>
+    <div class="detail-field">
+      <dt>First Name</dt>
+      <dd><%= @officer.first_name %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>Last Name</dt>
+      <dd><%= @officer.last_name %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>Status</dt>
+      <dd><%= @officer.active? ? "Active" : "Inactive" %></dd>
+    </div>
+    <div class="detail-field span-full">
+      <dt>Assignments</dt>
+      <dd style="white-space:pre-wrap;font-weight:400;line-height:1.7;"><%= @officer.assignments.presence || "—" %></dd>
+    </div>
+    <div class="detail-field span-full">
+      <dt>Units</dt>
+      <dd>
+        <% if @officer.units.any? %>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <% @officer.units.each do |unit| %>
+              <span class="badge badge-blue"><%= unit.name %></span>
+            <% end %>
+          </div>
+        <% else %>
+          —
+        <% end %>
+      </dd>
+    </div>
+  </dl>
+</div>
+
+<div class="table-card" style="margin-top:24px;">
+  <div style="padding:16px 20px;border-bottom:1px solid #E3E8EF;">
+    <h2 style="margin:0;font-size:16px;font-weight:600;">Case History</h2>
+  </div>
+  <% if @cases.any? %>
+    <table class="rms-table">
+      <thead>
+        <tr>
+          <th>Case #</th>
+          <th class="col-primary">Title</th>
+          <th>Status</th>
+          <th>Created</th>
+          <th class="col-actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @cases.each do |c| %>
+          <tr>
+            <td style="font-family:monospace;font-weight:600;"><%= c.case_number %></td>
+            <td class="col-primary"><%= c.title %></td>
+            <td>
+              <%
+                badge = case c.status
+                        when "Open"                then "badge-green"
+                        when "Under Investigation" then "badge-yellow"
+                        when "Closed"              then "badge-gray"
+                        when "Cold"                then "badge-blue"
+                        else "badge-gray"
+                        end
+              %>
+              <span class="badge <%= badge %>"><%= c.status %></span>
+            </td>
+            <td style="color:#6B7280;font-size:13px;"><%= c.created_at.strftime("%m/%d/%Y") %></td>
+            <td class="col-actions">
+              <%= link_to "View", admin_crime_case_path(c), class: "btn btn-secondary btn-sm" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p style="color:#9CA3AF;text-align:center;padding:40px 0;">No cases assigned to this officer.</p>
+  <% end %>
+</div>

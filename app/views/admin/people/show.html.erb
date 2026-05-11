@@ -1,0 +1,79 @@
+<div class="page-header">
+  <h1><%= @person.full_name %></h1>
+  <div style="display:flex;gap:8px;">
+    <%= link_to "Edit", edit_admin_person_path(@person), class: "btn btn-primary" %>
+    <%= link_to "Back", admin_people_path, class: "btn btn-secondary" %>
+  </div>
+</div>
+
+<%= render @person %>
+
+<div class="table-card" style="margin-top:24px;">
+  <div style="padding:16px 20px;border-bottom:1px solid #E3E8EF;">
+    <h2 style="margin:0;font-size:16px;font-weight:600;">Arrests (<%= @arrests.count %>)</h2>
+  </div>
+  <% if @arrests.any? %>
+    <table class="rms-table">
+      <thead>
+        <tr>
+          <th>Incident Report #</th>
+          <th class="col-primary">Charges</th>
+          <th>Arrested At</th>
+          <th class="col-actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @arrests.each do |arrest| %>
+          <tr>
+            <td style="font-family:monospace;font-weight:600;">
+              <%= arrest.incident&.report_number || "—" %>
+            </td>
+            <td class="col-primary" style="font-size:13px;">
+              <%= truncate(arrest.charges.to_s, length: 80) %>
+            </td>
+            <td style="color:#6B7280;font-size:13px;">
+              <%= arrest.arrested_at&.strftime("%m/%d/%Y %H:%M") || "—" %>
+            </td>
+            <td class="col-actions">
+              <% if arrest.incident %>
+                <%= link_to "View Incident", admin_incident_path(arrest.incident), class: "btn btn-secondary btn-sm" %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p style="color:#9CA3AF;text-align:center;padding:40px 0;">No arrests on record.</p>
+  <% end %>
+</div>
+
+<div class="table-card" style="margin-top:24px;">
+  <div style="padding:16px 20px;border-bottom:1px solid #E3E8EF;">
+    <h2 style="margin:0;font-size:16px;font-weight:600;">Vehicles (<%= @vehicles.count %>)</h2>
+  </div>
+  <% if @vehicles.any? %>
+    <table class="rms-table">
+      <thead>
+        <tr>
+          <th>Plate Number</th>
+          <th class="col-primary">Make / Model</th>
+          <th>Year</th>
+          <th>Color</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @vehicles.each do |vehicle| %>
+          <tr>
+            <td style="font-family:monospace;font-weight:600;"><%= vehicle.plate_number %></td>
+            <td class="col-primary"><%= "#{vehicle.make} #{vehicle.model}".strip %></td>
+            <td><%= vehicle.year %></td>
+            <td><%= vehicle.color.presence || "—" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p style="color:#9CA3AF;text-align:center;padding:40px 0;">No vehicles on record.</p>
+  <% end %>
+</div>

@@ -1,0 +1,56 @@
+<div class="page-header">
+  <h1>Suspects &amp; Victims</h1>
+</div>
+
+<div class="table-card" style="margin-bottom:16px;padding:16px 20px;">
+  <%= form_with url: admin_people_path, method: :get, local: true, style: "display:flex;align-items:center;gap:12px;" do |f| %>
+    <%= f.text_field :q, value: params[:q], placeholder: "Search by name…",
+          style: "flex:1;max-width:320px;padding:8px 12px;border:1px solid #D1D5DB;border-radius:6px;font-size:13px;" %>
+    <%= f.submit "Search", class: "btn btn-primary btn-sm" %>
+    <%= link_to "Clear", admin_people_path, class: "btn btn-secondary btn-sm" %>
+  <% end %>
+</div>
+
+<div class="table-card">
+  <% if @people.any? %>
+    <table class="rms-table">
+      <thead>
+        <tr>
+          <th class="col-primary">Name</th>
+          <th>Date of Birth</th>
+          <th>City / State</th>
+          <th>Arrests</th>
+          <th class="col-actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @people.each do |person| %>
+          <tr>
+            <td class="col-primary" style="font-weight:600;"><%= person.full_name %></td>
+            <td style="color:#6B7280;font-size:13px;">
+              <%= person.date_of_birth&.strftime("%m/%d/%Y") || "—" %>
+            </td>
+            <td style="font-size:13px;color:#6B7280;">
+              <%= [person.city, person.state].select(&:present?).join(", ").presence || "—" %>
+            </td>
+            <td style="text-align:center;">
+              <% count = person.arrests.count %>
+              <% if count > 0 %>
+                <span class="badge badge-red"><%= count %></span>
+              <% else %>
+                <span style="color:#9CA3AF;">0</span>
+              <% end %>
+            </td>
+            <td class="col-actions">
+              <%= link_to "View", admin_person_path(person), class: "btn btn-secondary btn-sm" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p style="color:#9CA3AF;text-align:center;padding:40px 0;">
+      <%= params[:q].present? ? "No people found matching \"#{params[:q]}\"." : "No people on record." %>
+    </p>
+  <% end %>
+</div>

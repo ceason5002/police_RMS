@@ -1,10 +1,15 @@
 puts "Clearing existing data..."
+AuditLog.destroy_all
+OfficerUnit.destroy_all
 Evidence.destroy_all
 Arrest.destroy_all
 Vehicle.destroy_all
 Incident.destroy_all
+CrimeCase.destroy_all
 Person.destroy_all
 Officer.destroy_all
+Unit.destroy_all
+User.destroy_all
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -241,11 +246,63 @@ puts "Seeding evidence..."
   )
 end
 
+# ── 7. Units ─────────────────────────────────────────────────────────────────
+puts "Seeding units..."
+unit_data = [
+  ["Patrol Division",      "Patrol"],
+  ["Homicide Unit",        "Homicide"],
+  ["Narcotics Unit",       "Narcotics"],
+  ["Gang Task Force",      "Gang Task Force"],
+  ["Traffic Division",     "Traffic"],
+  ["K-9 Unit",             "K-9"],
+  ["SWAT Team",            "SWAT"],
+  ["Detective Bureau",     "Detective Bureau"],
+  ["Juvenile Division",    "Juvenile"],
+  ["Community Policing",   "Community Policing"]
+]
+units = unit_data.map do |name, type|
+  Unit.create!(name: name, unit_type: type, description: "#{name} — responsible for #{type.downcase} operations.")
+end
+
+officers = Officer.all.to_a
+officers.each { |o| o.units << units.sample(rand(1..2)) }
+
+# ── 8. Crime Cases (20) ───────────────────────────────────────────────────────
+puts "Seeding crime cases..."
+20.times do |i|
+  lead = officers.sample
+  cc = CrimeCase.create!(
+    case_number:  "CASE-%04d" % (1000 + i),
+    title:        ["Operation #{%w[Thunder Shadow Eagle Falcon Viper Ghost Hawk Raven Strike Cobra].sample}",
+                   "#{INCIDENT_TYPES.sample} Investigation #{2024 + rand(2)}",
+                   "Task Force #{%w[Alpha Bravo Charlie Delta Echo].sample}"].sample,
+    status:       CrimeCase::STATUSES.sample,
+    description:  "Active investigation assigned to #{lead.full_name}. Multiple incidents linked.",
+    lead_officer: lead
+  )
+  Incident.all.to_a.sample(rand(2..5)).each { |inc| inc.update!(crime_case: cc) }
+end
+
+# ── 9. Admin User ─────────────────────────────────────────────────────────────
+puts "Seeding admin user..."
+User.create!(
+  email:    "admin@policerms.local",
+  password: "Admin1234!",
+  password_confirmation: "Admin1234!",
+  role:     "admin",
+  active:   true
+)
+
 puts ""
 puts "Done! Seeded:"
-puts "  #{Officer.count}  officers"
-puts "  #{Person.count}   persons"
-puts "  #{Incident.count} incidents"
-puts "  #{Vehicle.count}  vehicles"
-puts "  #{Arrest.count}   arrests"
-puts "  #{Evidence.count} evidence items"
+puts "  #{Officer.count}   officers"
+puts "  #{Person.count}    persons"
+puts "  #{Incident.count}  incidents"
+puts "  #{Vehicle.count}   vehicles"
+puts "  #{Arrest.count}    arrests"
+puts "  #{Evidence.count}  evidence items"
+puts "  #{Unit.count}      units"
+puts "  #{CrimeCase.count} cases"
+puts "  #{User.count}      users"
+puts ""
+puts "Admin login: admin@policerms.local / Admin1234!"

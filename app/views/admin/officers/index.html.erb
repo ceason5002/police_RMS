@@ -1,0 +1,66 @@
+<div class="page-header">
+  <h1>Officers</h1>
+  <%= link_to "New Officer", new_admin_officer_path, class: "btn btn-primary" %>
+</div>
+
+<div class="table-card" style="margin-bottom:16px;padding:16px 20px;">
+  <%= form_with url: admin_officers_path, method: :get, local: true, style: "display:flex;align-items:center;gap:12px;flex-wrap:wrap;" do |f| %>
+    <%= f.select :rank,
+          Officer::RANKS.map { |r| [r, r] },
+          { include_blank: "All Ranks" },
+          class: "btn btn-secondary btn-sm", style: "font-weight:400;" %>
+    <%= f.submit "Filter", class: "btn btn-primary btn-sm" %>
+    <%= link_to "Clear", admin_officers_path, class: "btn btn-secondary btn-sm" %>
+  <% end %>
+</div>
+
+<div class="table-card">
+  <% if @officers.any? %>
+    <table class="rms-table">
+      <thead>
+        <tr>
+          <th>Badge #</th>
+          <th class="col-primary">Name</th>
+          <th>Rank</th>
+          <th>Units</th>
+          <th>Status</th>
+          <th class="col-actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @officers.each do |officer| %>
+          <tr>
+            <td style="font-family:monospace;font-weight:600;"><%= officer.badge_number %></td>
+            <td class="col-primary"><%= officer.full_name %></td>
+            <td>
+              <span class="badge badge-blue"><%= officer.rank %></span>
+            </td>
+            <td style="font-size:13px;color:#6B7280;">
+              <% if officer.units.any? %>
+                <%= officer.units.map(&:name).join(", ") %>
+              <% else %>
+                —
+              <% end %>
+            </td>
+            <td>
+              <% if officer.active? %>
+                <span class="badge badge-green">Active</span>
+              <% else %>
+                <span class="badge badge-red">Inactive</span>
+              <% end %>
+            </td>
+            <td class="col-actions">
+              <%= link_to "View", admin_officer_path(officer), class: "btn btn-secondary btn-sm" %>
+              <%= button_to officer.active? ? "Deactivate" : "Activate",
+                    toggle_active_admin_officer_path(officer),
+                    method: :patch,
+                    class: "btn btn-sm #{officer.active? ? 'btn-danger' : 'btn-primary'}" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p style="color:#9CA3AF;text-align:center;padding:40px 0;">No officers found.</p>
+  <% end %>
+</div>

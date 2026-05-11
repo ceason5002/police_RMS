@@ -1,0 +1,52 @@
+<div class="page-header">
+  <h1>Edit Incident</h1>
+  <%= link_to "Back", admin_incident_path(@incident), class: "btn btn-secondary" %>
+</div>
+
+<div class="form-card">
+  <%= form_with model: [:admin, @incident], local: true do |f| %>
+    <% if @incident.errors.any? %>
+      <div class="error-box">
+        <strong><%= pluralize(@incident.errors.count, "error") %> prohibited this from being saved:</strong>
+        <ul>
+          <% @incident.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+      <div>
+        <%= f.label :status %>
+        <%= f.select :status,
+              [["Open", "Open"], ["Under Investigation", "Under Investigation"], ["Closed", "Closed"]],
+              { include_blank: "Select Status" } %>
+      </div>
+      <div>
+        <%= f.label :crime_case_id, "Linked Case" %>
+        <%= f.select :crime_case_id,
+              CrimeCase.order(:case_number).map { |c| ["#{c.case_number} — #{c.title}", c.id] },
+              { include_blank: "None", selected: @incident.crime_case_id } %>
+      </div>
+    </div>
+
+    <div style="margin-top:20px;padding:16px;background:#FFF9F0;border:1px solid #FDE68A;border-radius:8px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <label style="display:flex;align-items:center;gap:8px;font-weight:600;cursor:pointer;">
+          <%= f.check_box :flagged %>
+          Flag this incident
+        </label>
+      </div>
+      <div>
+        <%= f.label :flagged_reason, "Flag Reason" %>
+        <%= f.text_field :flagged_reason, placeholder: "Reason for flagging…" %>
+      </div>
+    </div>
+
+    <div style="margin-top:28px;display:flex;gap:10px;">
+      <%= f.submit "Update Incident", class: "btn btn-primary" %>
+      <%= link_to "Cancel", admin_incident_path(@incident), class: "btn btn-secondary" %>
+    </div>
+  <% end %>
+</div>

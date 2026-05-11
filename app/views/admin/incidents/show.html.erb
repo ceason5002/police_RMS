@@ -1,0 +1,46 @@
+<div class="page-header">
+  <h1>Incident <%= @incident.report_number %></h1>
+  <div style="display:flex;gap:8px;">
+    <%= link_to "Edit", edit_admin_incident_path(@incident), class: "btn btn-primary" %>
+    <%= link_to "Back", admin_incidents_path, class: "btn btn-secondary" %>
+  </div>
+</div>
+
+<% if @incident.flagged? %>
+  <div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:12px 18px;margin-bottom:20px;display:flex;align-items:center;gap:10px;">
+    <span style="color:#E11D48;font-size:18px;">&#9873;</span>
+    <div>
+      <span style="font-weight:600;color:#9B1C2E;">Flagged Incident</span>
+      <% if @incident.flagged_reason.present? %>
+        <span style="color:#9B1C2E;font-size:13px;margin-left:8px;">— <%= @incident.flagged_reason %></span>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<%= render @incident %>
+
+<% if @incident.crime_case.present? %>
+  <div class="detail-card" style="margin-top:24px;">
+    <div class="detail-card-header">
+      <h2>Linked Case</h2>
+    </div>
+    <div style="padding:16px 20px;">
+      <%= link_to "#{@incident.crime_case.case_number} — #{@incident.crime_case.title}",
+            admin_crime_case_path(@incident.crime_case),
+            style: "color:#635BFF;font-weight:600;" %>
+      <span style="margin-left:12px;">
+        <%
+          cb = case @incident.crime_case.status
+               when "Open"                then "badge-green"
+               when "Under Investigation" then "badge-yellow"
+               when "Closed"             then "badge-gray"
+               when "Cold"               then "badge-blue"
+               else "badge-gray"
+               end
+        %>
+        <span class="badge <%= cb %>"><%= @incident.crime_case.status %></span>
+      </span>
+    </div>
+  </div>
+<% end %>

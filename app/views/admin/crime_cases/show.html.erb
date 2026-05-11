@@ -1,0 +1,108 @@
+<%
+  case_badge = case @crime_case.status
+               when "Open"                then "badge-green"
+               when "Under Investigation" then "badge-yellow"
+               when "Closed"             then "badge-gray"
+               when "Cold"               then "badge-blue"
+               else "badge-gray"
+               end
+%>
+
+<div class="page-header">
+  <h1><%= @crime_case.title %></h1>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+    <%= link_to "Edit", edit_admin_crime_case_path(@crime_case), class: "btn btn-primary" %>
+    <% if %w[Open Under\ Investigation].include?(@crime_case.status) %>
+      <%= button_to "Close Case", close_admin_crime_case_path(@crime_case), method: :patch, class: "btn btn-danger" %>
+    <% end %>
+    <% if %w[Closed Cold].include?(@crime_case.status) %>
+      <%= button_to "Reopen Case", reopen_admin_crime_case_path(@crime_case), method: :patch, class: "btn btn-secondary" %>
+    <% end %>
+    <%= link_to "Back", admin_crime_cases_path, class: "btn btn-secondary" %>
+  </div>
+</div>
+
+<div class="detail-card">
+  <div class="detail-card-header">
+    <h2>Case Details</h2>
+    <span class="badge <%= case_badge %>"><%= @crime_case.status %></span>
+  </div>
+  <dl class="detail-grid">
+    <div class="detail-field">
+      <dt>Case Number</dt>
+      <dd style="font-family:monospace;font-weight:600;"><%= @crime_case.case_number %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>Status</dt>
+      <dd><span class="badge <%= case_badge %>"><%= @crime_case.status %></span></dd>
+    </div>
+    <div class="detail-field">
+      <dt>Lead Officer</dt>
+      <dd>
+        <% if @crime_case.lead_officer %>
+          <%= link_to @crime_case.lead_officer.full_name, admin_officer_path(@crime_case.lead_officer), style: "color:#635BFF;" %>
+        <% else %>
+          —
+        <% end %>
+      </dd>
+    </div>
+    <div class="detail-field">
+      <dt>Created</dt>
+      <dd><%= @crime_case.created_at.strftime("%m/%d/%Y at %H:%M") %></dd>
+    </div>
+    <div class="detail-field span-full">
+      <dt>Description</dt>
+      <dd style="white-space:pre-wrap;font-weight:400;line-height:1.7;"><%= @crime_case.description.presence || "—" %></dd>
+    </div>
+  </dl>
+</div>
+
+<div class="table-card" style="margin-top:24px;">
+  <div style="padding:16px 20px;border-bottom:1px solid #E3E8EF;">
+    <h2 style="margin:0;font-size:16px;font-weight:600;">Linked Incidents</h2>
+  </div>
+  <% if @incidents.any? %>
+    <table class="rms-table">
+      <thead>
+        <tr>
+          <th>Report #</th>
+          <th class="col-primary">Type</th>
+          <th>Status</th>
+          <th>Occurred</th>
+          <th>Flagged</th>
+          <th class="col-actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @incidents.each do |incident| %>
+          <tr>
+            <td style="font-family:monospace;font-weight:600;"><%= incident.report_number %></td>
+            <td class="col-primary"><%= incident.incident_type %></td>
+            <td>
+              <%
+                inc_badge = case incident.status
+                            when "Open"                then "badge-green"
+                            when "Under Investigation" then "badge-yellow"
+                            when "Closed"             then "badge-gray"
+                            else "badge-gray"
+                            end
+              %>
+              <span class="badge <%= inc_badge %>"><%= incident.status %></span>
+            </td>
+            <td style="color:#6B7280;font-size:13px;"><%= incident.occurred_at&.strftime("%m/%d/%Y %H:%M") %></td>
+            <td style="text-align:center;">
+              <% if incident.flagged? %>
+                <span style="color:#E11D48;font-size:16px;" title="Flagged">&#9873;</span>
+              <% end %>
+            </td>
+            <td class="col-actions">
+              <%= link_to "View", admin_incident_path(incident), class: "btn btn-secondary btn-sm" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p style="color:#9CA3AF;text-align:center;padding:40px 0;">No incidents linked to this case.</p>
+  <% end %>
+</div>

@@ -1,0 +1,64 @@
+<div class="page-header">
+  <h1>Dashboard</h1>
+</div>
+
+<div style="display:flex;gap:20px;margin-bottom:28px;flex-wrap:wrap;">
+  <div style="background:#fff;border:1px solid #E3E8EF;border-radius:10px;padding:20px;flex:1;min-width:160px;">
+    <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#6B7280;margin-bottom:10px;">Open Cases</div>
+    <div style="font-size:32px;font-weight:700;color:#0A2540;margin-bottom:8px;"><%= @open_cases %></div>
+    <span class="badge badge-green">Active</span>
+  </div>
+
+  <div style="background:#fff;border:1px solid #E3E8EF;border-radius:10px;padding:20px;flex:1;min-width:160px;">
+    <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#6B7280;margin-bottom:10px;">Closed Cases</div>
+    <div style="font-size:32px;font-weight:700;color:#0A2540;margin-bottom:8px;"><%= @closed_cases %></div>
+    <span class="badge badge-gray">Closed</span>
+  </div>
+
+  <div style="background:#fff;border:1px solid #E3E8EF;border-radius:10px;padding:20px;flex:1;min-width:160px;">
+    <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#6B7280;margin-bottom:10px;">Incidents Today</div>
+    <div style="font-size:32px;font-weight:700;color:#0A2540;margin-bottom:8px;"><%= @incidents_today %></div>
+    <span class="badge badge-blue">Today</span>
+  </div>
+
+  <div style="background:#fff;border:1px solid #E3E8EF;border-radius:10px;padding:20px;flex:1;min-width:160px;">
+    <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#6B7280;margin-bottom:10px;">Active Officers</div>
+    <div style="font-size:32px;font-weight:700;color:#0A2540;margin-bottom:8px;"><%= @active_officers %></div>
+    <span class="badge badge-purple">On Duty</span>
+  </div>
+</div>
+
+<div class="detail-card">
+  <div class="detail-card-header">
+    <h2>Recent Activity</h2>
+  </div>
+
+  <% if @recent_activity.any? %>
+    <div class="table-card" style="border:none;box-shadow:none;padding:0;">
+      <table class="rms-table" style="width:100%;">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>User</th>
+            <th>Action</th>
+            <th>Resource</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @recent_activity.each do |log| %>
+            <tr>
+              <td style="white-space:nowrap;color:#6B7280;font-size:13px;"><%= log.created_at.strftime("%m/%d %H:%M") %></td>
+              <td><%= log.user&.display_name || "System" %></td>
+              <td><%= log.action %></td>
+              <td><%= log.resource_type %> #<%= log.resource_id %></td>
+              <td style="color:#6B7280;font-size:13px;"><%= log.details.presence || "—" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <p style="color:#9CA3AF;padding:20px 0;text-align:center;">No recent activity to display.</p>
+  <% end %>
+</div>

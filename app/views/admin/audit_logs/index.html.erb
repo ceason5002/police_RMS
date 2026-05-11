@@ -1,0 +1,73 @@
+<div class="page-header">
+  <h1>Audit Log</h1>
+</div>
+
+<div class="table-card" style="margin-bottom:16px;padding:16px 20px;">
+  <%= form_with url: admin_audit_logs_path, method: :get, local: true, style: "display:flex;align-items:center;gap:12px;flex-wrap:wrap;" do |f| %>
+    <%= f.text_field :action_filter,
+          value: params[:action_filter],
+          placeholder: "Filter by action…",
+          style: "padding:8px 12px;border:1px solid #D1D5DB;border-radius:6px;font-size:13px;width:180px;" %>
+    <%= f.select :resource_type,
+          %w[Incident Officer CrimeCase Unit User Person Vehicle Evidence Arrest].map { |t| [t, t] },
+          { include_blank: "All Resource Types" },
+          class: "btn btn-secondary btn-sm", style: "font-weight:400;" %>
+    <%= f.select :user_id,
+          User.order(:email).map { |u| [u.display_name, u.id] },
+          { include_blank: "All Users" },
+          class: "btn btn-secondary btn-sm", style: "font-weight:400;" %>
+    <%= f.submit "Filter", class: "btn btn-primary btn-sm" %>
+    <%= link_to "Clear", admin_audit_logs_path, class: "btn btn-secondary btn-sm" %>
+  <% end %>
+</div>
+
+<div class="table-card">
+  <% if @logs.any? %>
+    <table class="rms-table">
+      <thead>
+        <tr>
+          <th style="white-space:nowrap;">Timestamp</th>
+          <th>User</th>
+          <th>Action</th>
+          <th>Resource Type</th>
+          <th>Resource ID</th>
+          <th>IP Address</th>
+          <th class="col-primary">Details</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @logs.each do |log| %>
+          <tr>
+            <td style="white-space:nowrap;font-size:13px;color:#6B7280;">
+              <%= log.created_at.strftime("%m/%d/%Y %H:%M") %>
+            </td>
+            <td style="font-size:13px;">
+              <%= log.user&.display_name || "<em style='color:#9CA3AF;'>System</em>".html_safe %>
+            </td>
+            <td>
+              <%
+                action_badge = case log.action.to_s.downcase
+                               when "created"  then "badge-green"
+                               when "updated"  then "badge-blue"
+                               when "deleted"  then "badge-red"
+                               else "badge-gray"
+                               end
+              %>
+              <span class="badge <%= action_badge %>"><%= log.action %></span>
+            </td>
+            <td style="font-size:13px;"><%= log.resource_type %></td>
+            <td style="font-family:monospace;font-size:13px;"><%= log.resource_id %></td>
+            <td style="font-family:monospace;font-size:12px;color:#9CA3AF;">
+              <%= log.ip_address.presence || "—" %>
+            </td>
+            <td class="col-primary" style="font-size:13px;color:#6B7280;">
+              <%= log.details.presence || "—" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p style="color:#9CA3AF;text-align:center;padding:40px 0;">No audit log entries found.</p>
+  <% end %>
+</div>
