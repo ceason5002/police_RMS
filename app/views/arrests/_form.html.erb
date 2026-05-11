@@ -1,0 +1,50 @@
+<%= form_with(model: arrest) do |form| %>
+  <% if arrest.errors.any? %>
+    <div class="error-box">
+      <strong><%= pluralize(arrest.errors.count, "error") %> prohibited this from being saved:</strong>
+      <ul>
+        <% arrest.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :incident_id, "Incident", style: "display: block" %>
+    <%= form.select :incident_id,
+        Incident.order(occurred_at: :desc).map { |i| ["##{i.report_number} — #{i.incident_type} (#{i.occurred_at&.strftime('%m/%d/%Y')})", i.id] },
+        { prompt: "Select incident" } %>
+  </div>
+
+  <div>
+    <%= form.label :person_id, "Person Arrested", style: "display: block" %>
+    <%= form.select :person_id,
+        Person.order(:last_name).map { |p| [p.full_name, p.id] },
+        { prompt: "Select person" } %>
+  </div>
+
+  <div>
+    <%= form.label :charges, style: "display: block" %>
+    <%= form.textarea :charges, placeholder: "List all charges, one per line" %>
+  </div>
+
+  <div>
+    <%= form.label :arrested_at, style: "display: block" %>
+    <%= form.datetime_field :arrested_at %>
+  </div>
+
+  <div>
+    <%= form.label :mugshot, style: "display: block" %>
+    <% if arrest.mugshot.attached? %>
+      <div style="margin-bottom: 8px;">
+        <%= image_tag arrest.mugshot, style: "max-width: 200px; border-radius: 4px;" %>
+      </div>
+    <% end %>
+    <%= form.file_field :mugshot, accept: "image/*" %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

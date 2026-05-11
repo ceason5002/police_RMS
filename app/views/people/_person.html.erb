@@ -1,0 +1,40 @@
+<div class="detail-card" id="<%= dom_id person %>">
+  <div class="detail-card-header">
+    <h2><%= person.full_name %></h2>
+    <span class="badge badge-gray"><%= person.arrests.count %> arrest<%= person.arrests.count == 1 ? "" : "s" %></span>
+  </div>
+  <dl class="detail-grid">
+    <div class="detail-field">
+      <dt>First Name</dt>
+      <dd><%= person.first_name %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>Last Name</dt>
+      <dd><%= person.last_name %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>Date of Birth</dt>
+      <dd><%= person.date_of_birth&.strftime("%m/%d/%Y") || "—" %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>Street Address</dt>
+      <dd><%= person.street_address.presence || "—" %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>City</dt>
+      <dd><%= person.city.presence || "—" %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>State</dt>
+      <dd><%= person.state.presence || "—" %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>ZIP Code</dt>
+      <dd><%= person.zip_code.presence || "—" %></dd>
+    </div>
+    <div class="detail-field span-full">
+      <dt>Notes / History</dt>
+      <dd style="white-space: pre-wrap; font-weight: 400; line-height: 1.7;"><%= person.notes.presence || "—" %></dd>
+    </div>
+  </dl>
+</div>

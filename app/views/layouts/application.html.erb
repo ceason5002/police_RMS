@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Police RMS" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= yield :head %>
+    <link rel="icon" href="/icon.png" type="image/png">
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+    <%= javascript_importmap_tags %>
+  </head>
+  <body>
+    <nav class="rms-nav">
+      <%= link_to "Police RMS", root_path, class: "rms-nav-brand" %>
+      <div class="rms-nav-links">
+        <%= link_to "Incidents", incidents_path %>
+        <%= link_to "Officers",  officers_path %>
+        <%= link_to "Arrests",   arrests_path %>
+        <%= link_to "Persons",   people_path %>
+        <%= link_to "Vehicles",  vehicles_path %>
+        <%= link_to "Evidence",  evidences_path %>
+      </div>
+    </nav>
+    <div class="page-container">
+      <% if notice.present? %>
+        <div class="flash flash-notice"><%= notice %></div>
+      <% end %>
+      <% if alert.present? %>
+        <div class="flash flash-alert"><%= alert %></div>
+      <% end %>
+      <%= yield %>
+    </div>
+  </body>
+</html>

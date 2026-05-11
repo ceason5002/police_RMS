@@ -1,0 +1,42 @@
+<div class="detail-card" id="<%= dom_id evidence %>">
+  <div class="detail-card-header">
+    <h2>Evidence #<%= evidence.evidence_number %></h2>
+    <%
+      badge = case evidence.status
+              when "Collected"  then "badge-blue"
+              when "In Lab"     then "badge-purple"
+              when "In Storage" then "badge-gray"
+              when "Released"   then "badge-green"
+              when "Destroyed"  then "badge-red"
+              else "badge-gray"
+              end
+    %>
+    <span class="badge <%= badge %>"><%= evidence.status %></span>
+  </div>
+  <dl class="detail-grid">
+    <div class="detail-field">
+      <dt>Incident Report #</dt>
+      <dd><%= evidence.incident&.report_number || "—" %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>Description</dt>
+      <dd><%= evidence.description.presence || "—" %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>Storage Location</dt>
+      <dd><%= evidence.location_stored.presence || "—" %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>Collected At</dt>
+      <dd><%= evidence.collected_at&.strftime("%m/%d/%Y %H:%M") || "—" %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>Collected By</dt>
+      <dd><%= evidence.collected_by.presence || "—" %></dd>
+    </div>
+    <div class="detail-field span-full">
+      <dt>Chain of Custody</dt>
+      <dd style="white-space: pre-wrap; font-weight: 400; line-height: 1.7;"><%= evidence.chain_of_custody.presence || "—" %></dd>
+    </div>
+  </dl>
+</div>

@@ -1,0 +1,89 @@
+<%= form_with(model: incident) do |form| %>
+  <% if incident.errors.any? %>
+    <div class="error-box">
+      <strong><%= pluralize(incident.errors.count, "error") %> prohibited this from being saved:</strong>
+      <ul>
+        <% incident.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :report_number, style: "display: block" %>
+    <%= form.text_field :report_number %>
+  </div>
+
+  <div>
+    <%= form.label :incident_type, style: "display: block" %>
+    <%= form.select :incident_type, [
+      "Assault", "Burglary", "Disorderly Conduct", "Domestic Violence",
+      "Drug Offense", "Fraud", "Homicide", "Missing Person",
+      "Motor Vehicle Theft", "Robbery", "Theft", "Traffic Accident",
+      "Trespassing", "Vandalism", "Other"
+    ], { prompt: "Select type" } %>
+  </div>
+
+  <div>
+    <%= form.label :status, style: "display: block" %>
+    <%= form.select :status, ["Open", "Under Investigation", "Closed"], { prompt: "Select status" } %>
+  </div>
+
+  <div data-controller="map">
+    <label style="display: block; font-weight: bold; margin-bottom: 6px;">Location</label>
+
+    <div style="position: relative; margin-bottom: 12px;">
+      <input type="text"
+             placeholder="Search address..."
+             data-map-target="search"
+             data-action="input->map#search"
+             style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
+      <div data-map-target="suggestions"
+           style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #ccc; border-top: none; z-index: 1000; max-height: 220px; overflow-y: auto; border-radius: 0 0 4px 4px; box-shadow: 0 4px 8px rgba(0,0,0,0.12);"></div>
+    </div>
+
+    <div style="margin-bottom: 8px;">
+      <%= form.label :street_address, style: "display: block; font-size: 13px; color: #555;" %>
+      <%= form.text_field :street_address, data: { map_target: "streetAddress" }, style: "width: 100%; box-sizing: border-box;" %>
+    </div>
+
+    <div style="display: flex; gap: 10px; margin-bottom: 8px;">
+      <div style="flex: 2;">
+        <%= form.label :city, style: "display: block; font-size: 13px; color: #555;" %>
+        <%= form.text_field :city, data: { map_target: "city" }, style: "width: 100%; box-sizing: border-box;" %>
+      </div>
+      <div style="flex: 1;">
+        <%= form.label :state, style: "display: block; font-size: 13px; color: #555;" %>
+        <%= form.text_field :state, data: { map_target: "state" }, style: "width: 100%; box-sizing: border-box;" %>
+      </div>
+      <div style="flex: 1;">
+        <%= form.label :zip_code, "ZIP Code", style: "display: block; font-size: 13px; color: #555;" %>
+        <%= form.text_field :zip_code, data: { map_target: "zipCode" }, style: "width: 100%; box-sizing: border-box;" %>
+      </div>
+    </div>
+
+    <%= form.hidden_field :latitude, data: { map_target: "latitude" } %>
+    <%= form.hidden_field :longitude, data: { map_target: "longitude" } %>
+    <div data-map-target="container" style="height: 350px; border-radius: 6px; border: 1px solid #ccc;"></div>
+  </div>
+
+  <div>
+    <%= form.label :occurred_at, style: "display: block" %>
+    <%= form.datetime_field :occurred_at %>
+  </div>
+
+  <div>
+    <%= form.label :reported_at, style: "display: block" %>
+    <%= form.datetime_field :reported_at %>
+  </div>
+
+  <div>
+    <%= form.label :narrative, style: "display: block" %>
+    <%= form.textarea :narrative %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,10 @@
+<% content_for :title, "Incident" %>
+<div class="page-header">
+  <h1>Incident</h1>
+  <div style="display:flex;gap:10px;">
+    <%= link_to "Edit", edit_incident_path(@incident), class: "btn btn-secondary" %>
+    <%= button_to "Delete", @incident, method: :delete, class: "btn btn-danger", form: { data: { turbo_confirm: "Are you sure?" } } %>
+  </div>
+</div>
+<%= render @incident %>
+<%= link_to "← Back", incidents_path, class: "btn btn-secondary", style: "margin-top: 16px;" %>

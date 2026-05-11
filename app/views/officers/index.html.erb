@@ -1,0 +1,48 @@
+<% content_for :title, "Officers" %>
+
+<div class="page-header">
+  <h1>Officers</h1>
+  <%= link_to "New Officer", new_officer_path, class: "btn btn-primary" %>
+</div>
+
+<div class="table-card">
+  <table class="rms-table">
+    <thead>
+      <tr>
+        <th>Badge #</th>
+        <th>Name</th>
+        <th>Rank</th>
+        <th>Assignments</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if @officers.empty? %>
+        <tr><td colspan="5"><div class="empty-state"><p>No officers on record.</p></div></td></tr>
+      <% else %>
+        <% @officers.each do |officer| %>
+          <tr>
+            <td class="col-primary"><%= officer.badge_number %></td>
+            <td><%= officer.last_name %>, <%= officer.first_name %></td>
+            <td>
+              <%
+                badge = case officer.rank
+                        when "Chief", "Deputy Chief" then "badge-purple"
+                        when "Captain", "Commander"  then "badge-blue"
+                        when "Detective"             then "badge-blue"
+                        when "Sergeant", "Lieutenant" then "badge-yellow"
+                        else "badge-gray"
+                        end
+              %>
+              <span class="badge <%= badge %>"><%= officer.rank %></span>
+            </td>
+            <td><%= officer.assignments&.truncate(60) %></td>
+            <td class="col-actions">
+              <%= link_to "View", officer, class: "btn btn-secondary btn-sm" %>
+            </td>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,54 @@
+<div class="detail-card" id="<%= dom_id incident %>">
+  <div class="detail-card-header">
+    <h2>Incident Report #<%= incident.report_number %></h2>
+    <%
+      badge = case incident.status
+              when "Open"                then "badge-green"
+              when "Under Investigation" then "badge-yellow"
+              when "Closed"              then "badge-gray"
+              else "badge-gray"
+              end
+    %>
+    <span class="badge <%= badge %>"><%= incident.status %></span>
+  </div>
+  <dl class="detail-grid">
+    <div class="detail-field">
+      <dt>Type</dt>
+      <dd><%= incident.incident_type %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>Occurred</dt>
+      <dd><%= incident.occurred_at&.strftime("%m/%d/%Y %H:%M") %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>Reported</dt>
+      <dd><%= incident.reported_at&.strftime("%m/%d/%Y %H:%M") %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>Street Address</dt>
+      <dd><%= incident.street_address.presence || "—" %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>City</dt>
+      <dd><%= incident.city.presence || "—" %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>State</dt>
+      <dd><%= incident.state.presence || "—" %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>ZIP Code</dt>
+      <dd><%= incident.zip_code.presence || "—" %></dd>
+    </div>
+    <% if incident.latitude.present? && incident.longitude.present? %>
+      <div class="detail-field">
+        <dt>Coordinates</dt>
+        <dd><%= "%.6f, %.6f" % [incident.latitude, incident.longitude] %></dd>
+      </div>
+    <% end %>
+    <div class="detail-field span-full">
+      <dt>Narrative</dt>
+      <dd style="white-space: pre-wrap; font-weight: 400; line-height: 1.7;"><%= incident.narrative.presence || "—" %></dd>
+    </div>
+  </dl>
+</div>

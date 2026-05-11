@@ -1,0 +1,37 @@
+<% content_for :title, "Arrests" %>
+
+<div class="page-header">
+  <h1>Arrests</h1>
+  <%= link_to "New Arrest", new_arrest_path, class: "btn btn-primary" %>
+</div>
+
+<div class="table-card">
+  <table class="rms-table">
+    <thead>
+      <tr>
+        <th>Person</th>
+        <th>Incident #</th>
+        <th>Charges</th>
+        <th>Arrested</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if @arrests.empty? %>
+        <tr><td colspan="5"><div class="empty-state"><p>No arrests on record.</p></div></td></tr>
+      <% else %>
+        <% @arrests.each do |arrest| %>
+          <tr>
+            <td class="col-primary"><%= arrest.person&.full_name %></td>
+            <td><%= arrest.incident&.report_number %></td>
+            <td><%= arrest.charges&.truncate(60) %></td>
+            <td><%= arrest.arrested_at&.strftime("%m/%d/%Y %H:%M") %></td>
+            <td class="col-actions">
+              <%= link_to "View", arrest, class: "btn btn-secondary btn-sm" %>
+            </td>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+</div>

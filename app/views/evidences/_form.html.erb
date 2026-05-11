@@ -1,0 +1,58 @@
+<%= form_with(model: evidence) do |form| %>
+  <% if evidence.errors.any? %>
+    <div class="error-box">
+      <strong><%= pluralize(evidence.errors.count, "error") %> prohibited this from being saved:</strong>
+      <ul>
+        <% evidence.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :incident_id, "Incident", style: "display: block" %>
+    <%= form.select :incident_id,
+        Incident.order(occurred_at: :desc).map { |i| ["##{i.report_number} — #{i.incident_type} (#{i.occurred_at&.strftime('%m/%d/%Y')})", i.id] },
+        { prompt: "Select incident" } %>
+  </div>
+
+  <div>
+    <%= form.label :evidence_number, style: "display: block" %>
+    <%= form.text_field :evidence_number %>
+  </div>
+
+  <div>
+    <%= form.label :description, style: "display: block" %>
+    <%= form.text_field :description %>
+  </div>
+
+  <div>
+    <%= form.label :status, style: "display: block" %>
+    <%= form.select :status, Evidence::STATUSES, { prompt: "Select status" } %>
+  </div>
+
+  <div>
+    <%= form.label :location_stored, "Storage Location", style: "display: block" %>
+    <%= form.text_field :location_stored, placeholder: "e.g. Evidence Room Locker 14-B" %>
+  </div>
+
+  <div>
+    <%= form.label :collected_at, style: "display: block" %>
+    <%= form.datetime_field :collected_at %>
+  </div>
+
+  <div>
+    <%= form.label :collected_by, style: "display: block" %>
+    <%= form.text_field :collected_by, placeholder: "Officer name or badge number" %>
+  </div>
+
+  <div>
+    <%= form.label :chain_of_custody, style: "display: block" %>
+    <%= form.textarea :chain_of_custody, placeholder: "Log each transfer: date, from, to, reason" %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  report_number: MyString
+  incident_type: MyString
+  status: MyString
+  location: MyString
+  occurred_at: 2026-05-07 17:08:40
+  reported_at: 2026-05-07 17:08:40
+  narrative: MyText
+
+two:
+  report_number: MyString
+  incident_type: MyString
+  status: MyString
+  location: MyString
+  occurred_at: 2026-05-07 17:08:40
+  reported_at: 2026-05-07 17:08:40
+  narrative: MyText

@@ -1,0 +1,8 @@
+<% content_for :title, "Edit Vehicle" %>
+<div class="page-header">
+  <h1>Edit Vehicle</h1>
+  <%= link_to "← Back", vehicle_path(@vehicle), class: "btn btn-secondary" %>
+</div>
+<div class="form-card">
+  <%= render "form", vehicle: @vehicle %>
+</div>

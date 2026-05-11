@@ -1,0 +1,8 @@
+<% content_for :title, "Edit Officer" %>
+<div class="page-header">
+  <h1>Edit Officer</h1>
+  <%= link_to "← Back", officer_path(@officer), class: "btn btn-secondary" %>
+</div>
+<div class="form-card">
+  <%= render "form", officer: @officer %>
+</div>

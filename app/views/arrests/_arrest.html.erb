@@ -1,0 +1,30 @@
+<div class="detail-card" id="<%= dom_id arrest %>">
+  <div class="detail-card-header">
+    <h2>Arrest Record</h2>
+    <span class="badge badge-red">Arrest</span>
+  </div>
+  <dl class="detail-grid">
+    <div class="detail-field">
+      <dt>Person Arrested</dt>
+      <dd><%= arrest.person&.full_name || "—" %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>Incident Report #</dt>
+      <dd><%= arrest.incident&.report_number || "—" %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>Arrested At</dt>
+      <dd><%= arrest.arrested_at&.strftime("%m/%d/%Y %H:%M") || "—" %></dd>
+    </div>
+    <div class="detail-field span-full">
+      <dt>Charges</dt>
+      <dd style="white-space: pre-wrap; font-weight: 400; line-height: 1.7;"><%= arrest.charges.presence || "—" %></dd>
+    </div>
+    <% if arrest.mugshot.attached? %>
+      <div class="detail-field span-full">
+        <dt>Mugshot</dt>
+        <dd><%= image_tag arrest.mugshot, style: "max-width: 220px; border-radius: 6px; margin-top: 6px; border: 1px solid var(--border);" %></dd>
+      </div>
+    <% end %>
+  </dl>
+</div>

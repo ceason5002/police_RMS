@@ -1,0 +1,10 @@
+<% content_for :title, "Arrest" %>
+<div class="page-header">
+  <h1>Arrest</h1>
+  <div style="display:flex;gap:10px;">
+    <%= link_to "Edit", edit_arrest_path(@arrest), class: "btn btn-secondary" %>
+    <%= button_to "Delete", @arrest, method: :delete, class: "btn btn-danger", form: { data: { turbo_confirm: "Are you sure?" } } %>
+  </div>
+</div>
+<%= render @arrest %>
+<%= link_to "← Back", arrests_path, class: "btn btn-secondary", style: "margin-top: 16px;" %>

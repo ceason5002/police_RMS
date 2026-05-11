@@ -1,0 +1,41 @@
+<%= form_with(model: officer) do |form| %>
+  <% if officer.errors.any? %>
+    <div class="error-box">
+      <strong><%= pluralize(officer.errors.count, "error") %> prohibited this from being saved:</strong>
+      <ul>
+        <% officer.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :badge_number, style: "display: block" %>
+    <%= form.text_field :badge_number %>
+  </div>
+
+  <div>
+    <%= form.label :first_name, style: "display: block" %>
+    <%= form.text_field :first_name %>
+  </div>
+
+  <div>
+    <%= form.label :last_name, style: "display: block" %>
+    <%= form.text_field :last_name %>
+  </div>
+
+  <div>
+    <%= form.label :rank, style: "display: block" %>
+    <%= form.select :rank, Officer::RANKS, { prompt: "Select rank" } %>
+  </div>
+
+  <div>
+    <%= form.label :assignments, style: "display: block" %>
+    <%= form.textarea :assignments, placeholder: "e.g. Patrol District 4, K-9 Unit" %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

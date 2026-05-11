@@ -1,0 +1,37 @@
+<% content_for :title, "Vehicles" %>
+
+<div class="page-header">
+  <h1>Vehicles</h1>
+  <%= link_to "New Vehicle", new_vehicle_path, class: "btn btn-primary" %>
+</div>
+
+<div class="table-card">
+  <table class="rms-table">
+    <thead>
+      <tr>
+        <th>Plate</th>
+        <th>Year / Make / Model</th>
+        <th>Color</th>
+        <th>Owner</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if @vehicles.empty? %>
+        <tr><td colspan="5"><div class="empty-state"><p>No vehicles on record.</p></div></td></tr>
+      <% else %>
+        <% @vehicles.each do |vehicle| %>
+          <tr>
+            <td class="col-primary"><%= vehicle.plate_number %></td>
+            <td><%= [vehicle.year, vehicle.make, vehicle.model].compact_blank.join(" ") %></td>
+            <td><%= vehicle.color %></td>
+            <td><%= vehicle.person&.full_name %></td>
+            <td class="col-actions">
+              <%= link_to "View", vehicle, class: "btn btn-secondary btn-sm" %>
+            </td>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+</div>

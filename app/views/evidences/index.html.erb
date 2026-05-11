@@ -1,0 +1,51 @@
+<% content_for :title, "Evidence" %>
+
+<div class="page-header">
+  <h1>Evidence</h1>
+  <%= link_to "New Evidence", new_evidence_path, class: "btn btn-primary" %>
+</div>
+
+<div class="table-card">
+  <table class="rms-table">
+    <thead>
+      <tr>
+        <th>Evidence #</th>
+        <th>Description</th>
+        <th>Status</th>
+        <th>Incident #</th>
+        <th>Collected</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if @evidences.empty? %>
+        <tr><td colspan="6"><div class="empty-state"><p>No evidence on record.</p></div></td></tr>
+      <% else %>
+        <% @evidences.each do |evidence| %>
+          <tr>
+            <td class="col-primary"><%= evidence.evidence_number %></td>
+            <td><%= evidence.description&.truncate(60) %></td>
+            <td>
+              <%
+                badge = case evidence.status
+                        when "Collected"  then "badge-blue"
+                        when "In Lab"     then "badge-purple"
+                        when "In Storage" then "badge-gray"
+                        when "Released"   then "badge-green"
+                        when "Destroyed"  then "badge-red"
+                        else "badge-gray"
+                        end
+              %>
+              <span class="badge <%= badge %>"><%= evidence.status %></span>
+            </td>
+            <td><%= evidence.incident&.report_number %></td>
+            <td><%= evidence.collected_at&.strftime("%m/%d/%Y") %></td>
+            <td class="col-actions">
+              <%= link_to "View", evidence, class: "btn btn-secondary btn-sm" %>
+            </td>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+</div>

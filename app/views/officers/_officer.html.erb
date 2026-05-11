@@ -1,0 +1,28 @@
+<div class="detail-card" id="<%= dom_id officer %>">
+  <div class="detail-card-header">
+    <h2><%= officer.rank %> <%= officer.first_name %> <%= officer.last_name %></h2>
+    <span class="badge badge-blue">Badge #<%= officer.badge_number %></span>
+  </div>
+  <dl class="detail-grid">
+    <div class="detail-field">
+      <dt>First Name</dt>
+      <dd><%= officer.first_name %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>Last Name</dt>
+      <dd><%= officer.last_name %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>Badge Number</dt>
+      <dd><%= officer.badge_number %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>Rank</dt>
+      <dd><%= officer.rank %></dd>
+    </div>
+    <div class="detail-field span-full">
+      <dt>Assignments</dt>
+      <dd style="white-space: pre-wrap; font-weight: 400; line-height: 1.7;"><%= officer.assignments.presence || "—" %></dd>
+    </div>
+  </dl>
+</div>

@@ -1,0 +1,32 @@
+<div class="detail-card" id="<%= dom_id vehicle %>">
+  <div class="detail-card-header">
+    <h2><%= [vehicle.year, vehicle.make, vehicle.model].compact_blank.join(" ") %></h2>
+    <span class="badge badge-blue"><%= vehicle.plate_number %></span>
+  </div>
+  <dl class="detail-grid">
+    <div class="detail-field">
+      <dt>Plate Number</dt>
+      <dd><%= vehicle.plate_number %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>Make</dt>
+      <dd><%= vehicle.make.presence || "—" %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>Model</dt>
+      <dd><%= vehicle.model.presence || "—" %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>Year</dt>
+      <dd><%= vehicle.year || "—" %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>Color</dt>
+      <dd><%= vehicle.color.presence || "—" %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>Owner</dt>
+      <dd><%= vehicle.person&.full_name || "—" %></dd>
+    </div>
+  </dl>
+</div>

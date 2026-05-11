@@ -1,0 +1,44 @@
+# Ignore bundler config
+/.bundle
+
+# Ignore all logfiles and tempfiles
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+
+# Ignore pidfiles
+/tmp/pids/*
+!/tmp/pids/.keep
+
+# Ignore storage (uploaded files)
+/storage/*
+!/storage/.keep
+/tmp/storage/*
+!/tmp/storage/.keep
+
+# Ignore master key — NEVER commit this
+/config/master.key
+/config/credentials.yml.enc
+
+# Ignore SQLite databases
+/db/*.sqlite3
+/db/*.sqlite3-journal
+/db/*.sqlite3-shm
+/db/*.sqlite3-wal
+
+# Ignore node modules
+/node_modules
+
+# Ignore yarn files
+/yarn-error.log
+yarn-debug.log*
+
+# Ignore Mac files
+.DS_Store
+
+# Ignore Claude Code local settings
+.claude/
+
+# Ignore bootsnap cache
+/tmp/cache/bootsnap*

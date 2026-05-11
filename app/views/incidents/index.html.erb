@@ -1,0 +1,49 @@
+<% content_for :title, "Incidents" %>
+
+<div class="page-header">
+  <h1>Incidents</h1>
+  <%= link_to "New Incident", new_incident_path, class: "btn btn-primary" %>
+</div>
+
+<div class="table-card">
+  <table class="rms-table">
+    <thead>
+      <tr>
+        <th>Report #</th>
+        <th>Type</th>
+        <th>Status</th>
+        <th>Location</th>
+        <th>Occurred</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if @incidents.empty? %>
+        <tr><td colspan="6"><div class="empty-state"><p>No incidents recorded yet.</p></div></td></tr>
+      <% else %>
+        <% @incidents.each do |incident| %>
+          <tr>
+            <td class="col-primary"><%= incident.report_number %></td>
+            <td><%= incident.incident_type %></td>
+            <td>
+              <%
+                badge = case incident.status
+                        when "Open"                then "badge-green"
+                        when "Under Investigation" then "badge-yellow"
+                        when "Closed"              then "badge-gray"
+                        else "badge-gray"
+                        end
+              %>
+              <span class="badge <%= badge %>"><%= incident.status %></span>
+            </td>
+            <td><%= [incident.city, incident.state].compact_blank.join(", ") %></td>
+            <td><%= incident.occurred_at&.strftime("%m/%d/%Y %H:%M") %></td>
+            <td class="col-actions">
+              <%= link_to "View", incident, class: "btn btn-secondary btn-sm" %>
+            </td>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+</div>

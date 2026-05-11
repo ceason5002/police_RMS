@@ -1,0 +1,48 @@
+<%= form_with(model: vehicle) do |form| %>
+  <% if vehicle.errors.any? %>
+    <div class="error-box">
+      <strong><%= pluralize(vehicle.errors.count, "error") %> prohibited this from being saved:</strong>
+      <ul>
+        <% vehicle.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :plate_number, style: "display: block" %>
+    <%= form.text_field :plate_number %>
+  </div>
+
+  <div>
+    <%= form.label :make, style: "display: block" %>
+    <%= form.text_field :make, placeholder: "e.g. Ford" %>
+  </div>
+
+  <div>
+    <%= form.label :model, style: "display: block" %>
+    <%= form.text_field :model, placeholder: "e.g. F-150" %>
+  </div>
+
+  <div>
+    <%= form.label :year, style: "display: block" %>
+    <%= form.number_field :year, min: 1900, max: Date.today.year + 1 %>
+  </div>
+
+  <div>
+    <%= form.label :color, style: "display: block" %>
+    <%= form.text_field :color %>
+  </div>
+
+  <div>
+    <%= form.label :person_id, "Owner", style: "display: block" %>
+    <%= form.select :person_id,
+        Person.order(:last_name).map { |p| [p.full_name, p.id] },
+        { prompt: "Select owner (optional)", include_blank: true } %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

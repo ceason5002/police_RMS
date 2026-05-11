@@ -1,0 +1,8 @@
+<% content_for :title, "New Incident" %>
+<div class="page-header">
+  <h1>New Incident</h1>
+  <%= link_to "← Back", incidents_path, class: "btn btn-secondary" %>
+</div>
+<div class="form-card">
+  <%= render "form", incident: @incident %>
+</div>
