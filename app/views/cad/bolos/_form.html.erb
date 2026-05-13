@@ -1,0 +1,38 @@
+<% if bolo.errors.any? %>
+  <div class="error-box">
+    <strong><%= pluralize(bolo.errors.count, "error") %>:</strong>
+    <ul><% bolo.errors.full_messages.each do |m| %><li><%= m %></li><% end %></ul>
+  </div>
+<% end %>
+
+<div>
+  <%= f.label :subject_description, "Subject Description" %>
+  <%= f.text_area :subject_description, rows: 3, placeholder: "Physical description of suspect: race, sex, height, weight, hair, clothing…" %>
+</div>
+
+<div>
+  <%= f.label :vehicle_description, "Vehicle Description" %>
+  <%= f.text_area :vehicle_description, rows: 2, placeholder: "Year, make, model, color, plate number…" %>
+</div>
+
+<div>
+  <%= f.label :last_known_location, "Last Known Location" %>
+  <%= f.text_field :last_known_location, placeholder: "123 Main St, Springfield" %>
+</div>
+
+<div>
+  <%= f.label :issuing_officer_id, "Issuing Officer" %>
+  <%= f.select :issuing_officer_id,
+        Officer.active.order(:last_name).map { |o| ["#{o.full_name} — #{o.rank}", o.id] },
+        { prompt: "Select officer…" } %>
+</div>
+
+<div>
+  <%= f.label :expires_at, "Expiry Date/Time (optional)" %>
+  <%= f.datetime_local_field :expires_at, value: bolo.expires_at&.strftime("%Y-%m-%dT%H:%M") %>
+</div>
+
+<div>
+  <%= f.label :status, "Status" %>
+  <%= f.select :status, Bolo::STATUSES %>
+</div>

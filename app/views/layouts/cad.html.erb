@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "CAD — Police Dispatch" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= yield :head %>
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+  <body style="margin:0;display:flex;flex-direction:column;min-height:100vh;background:#F6F9FC;">
+
+    <!-- CAD Top Nav -->
+    <nav style="background:#0A2540;height:52px;display:flex;align-items:center;padding:0 20px;gap:4px;position:sticky;top:0;z-index:300;box-shadow:0 1px 0 rgba(255,255,255,0.06);flex-shrink:0;">
+      <div style="color:#fff;font-weight:700;font-size:15px;letter-spacing:-0.3px;margin-right:8px;white-space:nowrap;">
+        Police CAD
+      </div>
+      <div style="width:1px;height:20px;background:rgba(255,255,255,0.12);margin:0 12px;"></div>
+      <%= cad_nav_link "", "Dashboard",   cad_root_path %>
+      <%= cad_nav_link "", "Active Calls", cad_calls_path %>
+      <%= cad_nav_link "", "Units",        cad_cad_units_path %>
+      <%= cad_nav_link "", "BOLOs",        cad_bolos_path %>
+      <%= cad_nav_link "", "Reports",      cad_reports_path %>
+      <div style="flex:1;"></div>
+      <% if Bolo.active.count > 0 %>
+        <span style="background:#DF1B41;color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;margin-right:12px;">
+          <%= Bolo.active.count %> ACTIVE BOLO<%= Bolo.active.count == 1 ? "" : "S" %>
+        </span>
+      <% end %>
+      <div style="color:rgba(255,255,255,0.5);font-size:12px;margin-right:12px;"><%= current_user.display_name %></div>
+      <%= link_to "RMS", root_path, style: "color:rgba(255,255,255,0.5);font-size:12px;text-decoration:none;padding:5px 10px;border:1px solid rgba(255,255,255,0.15);border-radius:5px;margin-right:6px;" %>
+      <%= link_to "Sign Out", destroy_user_session_path, data: { turbo_method: :delete }, style: "color:rgba(255,255,255,0.5);font-size:12px;text-decoration:none;padding:5px 10px;border:1px solid rgba(255,255,255,0.15);border-radius:5px;" %>
+    </nav>
+
+    <!-- Flash messages -->
+    <% if notice.present? %>
+      <div style="background:#D3F9E8;border-bottom:1px solid #A7F3C6;padding:9px 24px;font-size:13px;color:#0D6E49;font-weight:500;flex-shrink:0;"><%= notice %></div>
+    <% end %>
+    <% if alert.present? %>
+      <div style="background:#FFE4E8;border-bottom:1px solid #FCA5A5;padding:9px 24px;font-size:13px;color:#9B1C2E;font-weight:500;flex-shrink:0;"><%= alert %></div>
+    <% end %>
+
+    <!-- Main content -->
+    <% if content_for?(:full_bleed) %>
+      <%= yield :full_bleed %>
+    <% else %>
+      <div class="page-container">
+        <%= yield %>
+      </div>
+    <% end %>
+
+  </body>
+</html>

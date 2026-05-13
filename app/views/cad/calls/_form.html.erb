@@ -1,0 +1,56 @@
+<% if call.errors.any? %>
+  <div class="error-box">
+    <strong><%= pluralize(call.errors.count, "error") %>:</strong>
+    <ul><% call.errors.full_messages.each do |m| %><li><%= m %></li><% end %></ul>
+  </div>
+<% end %>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 20px;">
+  <div>
+    <%= f.label :caller_name, "Caller Name" %>
+    <%= f.text_field :caller_name, placeholder: "John Doe" %>
+  </div>
+  <div>
+    <%= f.label :caller_phone, "Caller Phone" %>
+    <%= f.text_field :caller_phone, placeholder: "555-123-4567" %>
+  </div>
+</div>
+
+<div>
+  <%= f.label :location, "Location / Address *" %>
+  <%= f.text_field :location, placeholder: "123 Main St, Springfield", required: true %>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 20px;">
+  <div>
+    <%= f.label :call_type, "Call Type *" %>
+    <%= f.select :call_type, CadCall::CALL_TYPES, { prompt: "Select type…" }, required: true %>
+  </div>
+  <div>
+    <%= f.label :priority, "Priority *" %>
+    <%= f.select :priority,
+          CadCall::PRIORITIES.map { |k, v| [v, k] },
+          { selected: call.priority || 3 }, required: true %>
+  </div>
+</div>
+
+<div>
+  <%= f.label :received_at, "Time Received *" %>
+  <%= f.datetime_local_field :received_at, value: (call.received_at || Time.current).strftime("%Y-%m-%dT%H:%M"), required: true %>
+</div>
+
+<div>
+  <%= f.label :description, "Description / Narrative" %>
+  <%= f.text_area :description, rows: 4, placeholder: "Additional details about the call…" %>
+</div>
+
+<% if call.persisted? %>
+  <div>
+    <%= f.label :status, "Status" %>
+    <%= f.select :status, CadCall::STATUSES %>
+  </div>
+<% end %>
+
+<!-- Hidden lat/lng fields populated when location is geocoded on show/map -->
+<%= f.hidden_field :latitude %>
+<%= f.hidden_field :longitude %>

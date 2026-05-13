@@ -1,0 +1,15 @@
+<% content_for :title, "Issue BOLO" %>
+
+<div class="page-header">
+  <h1>Issue BOLO</h1>
+  <%= link_to "Cancel", cad_bolos_path, class: "btn btn-secondary" %>
+</div>
+
+<div class="form-card">
+  <%= form_with model: @bolo, url: cad_bolos_path, local: true do |f| %>
+    <%= render "form", bolo: @bolo, f: f %>
+    <div style="margin-top:24px;">
+      <%= f.submit "Issue BOLO", class: "btn btn-danger" %>
+    </div>
+  <% end %>
+</div>

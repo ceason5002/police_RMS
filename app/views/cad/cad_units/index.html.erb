@@ -1,0 +1,82 @@
+<% content_for :title, "Unit Status Board" %>
+
+<div class="page-header">
+  <h1>Unit Status Board</h1>
+  <%= link_to "+ Add Unit", new_cad_cad_unit_path, class: "btn btn-primary" %>
+</div>
+
+<!-- Filters -->
+<div style="display:flex;gap:10px;margin-bottom:20px;">
+  <% CadUnit::STATUSES.each do |s| %>
+    <%= link_to s, cad_cad_units_path(status: s),
+          class: "btn btn-secondary btn-sm",
+          style: params[:status] == s ? "background:#635BFF;color:#fff;border-color:#635BFF;" : "" %>
+  <% end %>
+  <% if params[:status].present? %>
+    <%= link_to "All", cad_cad_units_path, class: "btn btn-secondary btn-sm" %>
+  <% end %>
+</div>
+
+<!-- Available at a glance -->
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;">
+  <% @units.each do |unit| %>
+    <div class="unit-status-tile <%= unit.status.downcase.gsub(' ','-') %>">
+      <div class="ust-number"><%= unit.unit_number %></div>
+      <div class="ust-type"><%= unit.unit_type %></div>
+      <%= unit_status_badge(unit.status) %>
+      <% if unit.assigned_officer %>
+        <div class="ust-officer"><%= unit.assigned_officer.full_name %></div>
+      <% end %>
+      <div class="ust-links">
+        <%= link_to "Detail", cad_cad_unit_path(unit) %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<!-- Full table -->
+<div class="table-card">
+  <% if @units.empty? %>
+    <div class="empty-state">
+      <p>No units configured.</p>
+      <%= link_to "Add a Unit", new_cad_cad_unit_path, class: "btn btn-primary" %>
+    </div>
+  <% else %>
+    <table class="rms-table">
+      <thead>
+        <tr>
+          <th>Unit #</th>
+          <th>Type</th>
+          <th>Assigned Officer</th>
+          <th>Status</th>
+          <th>Quick Status</th>
+          <th class="col-actions"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @units.each do |unit| %>
+          <tr>
+            <td class="col-primary"><%= unit.unit_number %></td>
+            <td><%= unit.unit_type %></td>
+            <td><%= unit.assigned_officer&.full_name || "—" %></td>
+            <td><%= unit_status_badge(unit.status) %></td>
+            <td>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;">
+                <% CadUnit::STATUSES.reject { |s| s == unit.status }.each do |s| %>
+                  <%= button_to s.split.first, change_status_cad_cad_unit_path(unit, status: s),
+                        method: :patch,
+                        class: "btn btn-secondary btn-sm",
+                        form: { style: "display:inline;" } %>
+                <% end %>
+              </div>
+            </td>
+            <td class="col-actions">
+              <%= link_to "View", cad_cad_unit_path(unit), class: "btn btn-secondary btn-sm" %>
+              <%= link_to "Edit", edit_cad_cad_unit_path(unit), class: "btn btn-secondary btn-sm" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>

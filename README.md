@@ -1,6 +1,6 @@
-# Police RMS
+# Police RMS + CAD
 
-A Records Management System for law enforcement built with Ruby on Rails 8.1.
+A Records Management System (RMS) and Computer-Aided Dispatch (CAD) system for law enforcement, built with Ruby on Rails 8.1. Both systems live in this single application and share one database.
 
 ## Requirements
 
@@ -18,13 +18,30 @@ rails server
 
 Then open `http://127.0.0.1:3000`.
 
+| URL | System |
+|---|---|
+| `http://127.0.0.1:3000` | RMS — incident reports, officers, arrests, evidence |
+| `http://127.0.0.1:3000/cad` | CAD — live dispatch dashboard, calls, units, BOLOs |
+
 ## Windows Note
 
 The default Puma `tmp_restart` plugin does not work on Windows. It has been removed from `config/puma.rb`. Use `rails server` normally — do not use `bin/rails server` directly.
 
+## Roles
+
+| Login Role | Access |
+|---|---|
+| `admin` | Full access to both RMS and CAD, plus the Admin panel |
+| `supervisor` | Full access to both RMS and CAD |
+| `dispatcher` | CAD only (dashboard, calls, units, BOLOs, reports) |
+| `detective` | RMS only |
+| `patrol_officer` | RMS only (read-focused) |
+
+Login IDs follow the format: one letter + four digits (e.g. `M1234`, `D1001`). Passwords are set by an admin. A dispatcher test account ships with the seed data: ID `D1001`, password `password123`.
+
 ---
 
-## Modules
+## RMS Modules
 
 ### Incidents
 Core report record. Fields: report number, incident type, status, street address, city, state, ZIP code, latitude/longitude, occurred at, reported at, narrative.
@@ -62,6 +79,49 @@ Fields: evidence number, description, status, storage location, collected at, co
 - Status is a dropdown: Collected, In Lab, In Storage, Released, Destroyed.
 - Evidence number must be unique.
 - Linked to an incident via dropdown.
+
+---
+
+## CAD Modules
+
+The CAD system is accessible at `/cad` and requires the `admin`, `supervisor`, or `dispatcher` role.
+
+### Dashboard
+Split-screen dispatcher view. Left panel shows the active calls queue (sorted by priority) and the unit status board. Right panel shows a live Leaflet map with color-coded pins for every active call. Both panels auto-refresh every 20 seconds. A red BOLO banner appears at the top when active BOLOs exist.
+
+### Calls
+Full call intake and management.
+
+- **Intake form** — caller name, phone, location, call type, priority (1–5), description, time received.
+- **Priority color coding** — Priority 1 (life threatening) = red, Priority 2 = orange, Priority 3 = yellow, Priority 4 = blue, Priority 5 = gray.
+- **Status workflow** — Pending → Dispatched → On Scene → Cleared. Each transition is timestamped.
+- **Active calls queue** — all open calls sorted by priority then time received.
+- **Call log** — append-only notes; dispatchers can add updates without overwriting history.
+- **Send to RMS** — one button on a cleared call creates a pre-populated RMS Incident Report and links the two records together.
+
+### Units
+Tracks every patrol unit in the field.
+
+- **Unit status board** — every unit with current status: Available, Dispatched, On Scene, Out of Service, Off Duty.
+- **Assign to call** — select any available unit from a dropdown on the call detail page; the unit status updates automatically.
+- **Status log** — every status change is recorded with timestamp and the dispatcher who made it.
+- Unit types: Patrol, K9, Detective, Supervisor, Traffic, SWAT.
+
+### BOLOs
+Be On the Lookout notices.
+
+- Fields: subject description, vehicle description, last known location, issuing officer, expiry date/time.
+- Statuses: Active, Cancelled, Resolved.
+- Active BOLOs appear as a red banner on the dispatcher dashboard.
+
+### Reports
+- **Call History** — searchable/filterable log of all calls by date range, status, type, or unit.
+- **Response Times** — average, minimum, maximum, and median time from call received to unit dispatched.
+- **Shift Summary** — calls per dispatcher, top call types, and priority breakdown for any calendar date.
+- **Unit Audit Trail** — every unit status change logged with timestamp and user.
+
+### RMS Integration
+When a CAD call is cleared, clicking **Send to RMS** creates an RMS Incident Report pre-filled with the call type, location, coordinates, narrative (including all call notes and unit assignments), and timestamps. The CAD call and RMS incident are linked by a foreign key, and the RMS incident page links back to the originating CAD call.
 
 ---
 
@@ -123,3 +183,16 @@ Fields: evidence number, description, status, storage location, collected at, co
 | `CreateArrests` | Arrests table with `incident_id` and `person_id` foreign keys |
 | `CreateEvidences` | Evidences table with `incident_id` foreign key |
 | `CreateActiveStorageTables` | Active Storage for mugshot uploads |
+| `DeviseCreateUsers` | User authentication table (Devise) |
+| `AddRoleAndOfficerToUsers` | Added `role`, `officer_id`, `active` to users |
+| `CreateUnits` | RMS department units table |
+| `CreateOfficerUnits` | Officer ↔ unit join table |
+| `CreateCrimeCases` | Case management table |
+| `CreateAuditLogs` | RMS activity audit log |
+| `AddLoginIdToUsers` | Added `login_id` (format: letter + 4 digits) |
+| `CreateCadCalls` | CAD dispatch calls with priority, status, timestamps, and location |
+| `CreateCadUnits` | CAD patrol units with type, status, and officer assignment |
+| `CreateCallUnits` | CAD call ↔ unit assignment join table |
+| `CreateCallNotes` | Append-only call log entries |
+| `CreateUnitStatusLogs` | Unit status change history with timestamp and user |
+| `CreateBolos` | BOLO notices with subject, vehicle, location, expiry, and status |

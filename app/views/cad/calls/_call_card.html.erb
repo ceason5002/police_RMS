@@ -1,0 +1,28 @@
+<div class="call-card <%= call.priority_css_class %>" id="call-card-<%= call.id %>">
+  <div class="call-card-top">
+    <div class="call-card-left">
+      <%= priority_badge(call.priority) %>
+      <span class="call-card-number"><%= call.call_number %></span>
+      <%= call_status_badge(call.status) %>
+    </div>
+    <span class="call-card-time"><%= call.received_at.strftime("%H:%M") %></span>
+  </div>
+
+  <div class="call-card-type"><%= call.call_type %></div>
+  <div class="call-card-location"><%= call.location %></div>
+
+  <% if call.cad_units.any? %>
+    <div class="call-card-units">Units: <%= call.cad_units.map(&:unit_number).join(", ") %></div>
+  <% end %>
+
+  <div class="call-card-actions">
+    <%= link_to "View", cad_call_path(call), class: "call-card-link" %>
+    <% unless call.cleared? %>
+      <%= button_to call.status == "Pending" ? "Dispatch" : call.status == "Dispatched" ? "On Scene" : "Clear",
+            advance_status_cad_call_path(call),
+            method: :patch,
+            class: "call-card-btn call-card-btn-#{call.priority_css_class}",
+            form: { style: "display:inline;" } %>
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,92 @@
+<% content_for :title, "Shift Summary" %>
+
+<div class="page-header">
+  <h1>Shift Summary — <%= @date.strftime("%B %d, %Y") %></h1>
+  <%= link_to "Reports", cad_reports_path, class: "btn btn-secondary btn-sm" %>
+</div>
+
+<!-- Date picker -->
+<div class="table-card" style="padding:16px 20px;margin-bottom:24px;">
+  <%= form_with url: shift_summary_cad_reports_path, method: :get, local: true do |f| %>
+    <div style="display:flex;gap:12px;align-items:flex-end;">
+      <%= f.label :date, "Shift Date", style: "font-size:12px;font-weight:500;" %>
+      <%= f.date_field :date, value: @date.to_s, style: "padding:7px 10px;border:1px solid #E3E8EF;border-radius:6px;font-size:13px;" %>
+      <%= f.submit "View", class: "btn btn-secondary btn-sm" %>
+    </div>
+  <% end %>
+</div>
+
+<!-- Totals -->
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;">
+  <div class="table-card" style="padding:20px 24px;text-align:center;">
+    <div style="font-size:32px;font-weight:700;color:#0A2540;"><%= @total_calls %></div>
+    <div style="font-size:12px;color:#8898AA;margin-top:4px;">Total Calls</div>
+  </div>
+  <div class="table-card" style="padding:20px 24px;text-align:center;">
+    <div style="font-size:32px;font-weight:700;color:#1EA672;"><%= @cleared_calls %></div>
+    <div style="font-size:12px;color:#8898AA;margin-top:4px;">Cleared</div>
+  </div>
+  <div class="table-card" style="padding:20px 24px;text-align:center;">
+    <div style="font-size:32px;font-weight:700;color:#635BFF;"><%= @total_calls - @cleared_calls %></div>
+    <div style="font-size:12px;color:#8898AA;margin-top:4px;">Open / Unresolved</div>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+
+  <!-- By Dispatcher -->
+  <div class="detail-card">
+    <div class="detail-card-header"><h2>Calls by Dispatcher</h2></div>
+    <% if @by_dispatcher.any? %>
+      <table class="rms-table">
+        <thead><tr><th>Dispatcher</th><th>Calls</th></tr></thead>
+        <tbody>
+          <% @by_dispatcher.each do |name, count| %>
+            <tr>
+              <td><%= name %></td>
+              <td class="col-primary"><%= count %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <div style="padding:20px 24px;color:#8898AA;font-size:13px;">No calls this shift.</div>
+    <% end %>
+  </div>
+
+  <!-- By Type -->
+  <div class="detail-card">
+    <div class="detail-card-header"><h2>Top Call Types</h2></div>
+    <% if @type_breakdown.any? %>
+      <table class="rms-table">
+        <thead><tr><th>Call Type</th><th>Count</th></tr></thead>
+        <tbody>
+          <% @type_breakdown.each do |type, count| %>
+            <tr>
+              <td><%= type %></td>
+              <td class="col-primary"><%= count %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <div style="padding:20px 24px;color:#8898AA;font-size:13px;">No calls this shift.</div>
+    <% end %>
+  </div>
+
+  <!-- Priority Breakdown -->
+  <div class="detail-card" style="grid-column:1/-1;">
+    <div class="detail-card-header"><h2>Priority Breakdown</h2></div>
+    <div style="display:flex;gap:16px;padding:16px 24px;flex-wrap:wrap;">
+      <% [1,2,3,4,5].each do |p| %>
+        <% count = @priority_breakdown.to_h[p] || 0 %>
+        <div style="text-align:center;min-width:80px;">
+          <%= priority_badge(p) %>
+          <div style="font-size:22px;font-weight:700;margin-top:8px;"><%= count %></div>
+          <div style="font-size:11px;color:#8898AA;"><%= CadCall::PRIORITIES[p]&.split("—")&.last&.strip %></div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+</div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_11_155647) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_13_100006) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -59,6 +59,80 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_11_155647) do
     t.string "resource_type"
     t.datetime "updated_at", null: false
     t.integer "user_id"
+  end
+
+  create_table "bolos", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "created_by_id"
+    t.datetime "expires_at"
+    t.integer "issuing_officer_id"
+    t.string "last_known_location"
+    t.string "status", default: "Active", null: false
+    t.text "subject_description"
+    t.datetime "updated_at", null: false
+    t.text "vehicle_description"
+    t.index ["created_by_id"], name: "index_bolos_on_created_by_id"
+    t.index ["issuing_officer_id"], name: "index_bolos_on_issuing_officer_id"
+    t.index ["status"], name: "index_bolos_on_status"
+  end
+
+  create_table "cad_calls", force: :cascade do |t|
+    t.string "call_number", null: false
+    t.string "call_type", null: false
+    t.string "caller_name"
+    t.string "caller_phone"
+    t.datetime "cleared_at"
+    t.datetime "created_at", null: false
+    t.integer "created_by_id"
+    t.text "description"
+    t.datetime "dispatched_at"
+    t.integer "incident_id"
+    t.decimal "latitude", precision: 10, scale: 7
+    t.string "location", null: false
+    t.decimal "longitude", precision: 10, scale: 7
+    t.datetime "on_scene_at"
+    t.integer "priority", default: 3, null: false
+    t.datetime "received_at", null: false
+    t.string "status", default: "Pending", null: false
+    t.datetime "updated_at", null: false
+    t.index ["call_number"], name: "index_cad_calls_on_call_number", unique: true
+    t.index ["created_by_id"], name: "index_cad_calls_on_created_by_id"
+    t.index ["incident_id"], name: "index_cad_calls_on_incident_id"
+    t.index ["priority"], name: "index_cad_calls_on_priority"
+    t.index ["status"], name: "index_cad_calls_on_status"
+  end
+
+  create_table "cad_units", force: :cascade do |t|
+    t.integer "assigned_officer_id"
+    t.datetime "created_at", null: false
+    t.string "status", default: "Available", null: false
+    t.string "unit_number", null: false
+    t.string "unit_type", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assigned_officer_id"], name: "index_cad_units_on_assigned_officer_id"
+    t.index ["status"], name: "index_cad_units_on_status"
+    t.index ["unit_number"], name: "index_cad_units_on_unit_number", unique: true
+  end
+
+  create_table "call_notes", force: :cascade do |t|
+    t.text "body", null: false
+    t.integer "cad_call_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.index ["cad_call_id"], name: "index_call_notes_on_cad_call_id"
+    t.index ["user_id"], name: "index_call_notes_on_user_id"
+  end
+
+  create_table "call_units", force: :cascade do |t|
+    t.datetime "assigned_at", null: false
+    t.integer "cad_call_id", null: false
+    t.integer "cad_unit_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cad_call_id", "cad_unit_id"], name: "index_call_units_on_cad_call_id_and_cad_unit_id", unique: true
+    t.index ["cad_call_id"], name: "index_call_units_on_cad_call_id"
+    t.index ["cad_unit_id"], name: "index_call_units_on_cad_unit_id"
   end
 
   create_table "crime_cases", force: :cascade do |t|
@@ -138,6 +212,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_11_155647) do
     t.string "zip_code"
   end
 
+  create_table "unit_status_logs", force: :cascade do |t|
+    t.integer "cad_unit_id", null: false
+    t.datetime "changed_at", null: false
+    t.integer "changed_by_id"
+    t.datetime "created_at", null: false
+    t.string "status", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cad_unit_id"], name: "index_unit_status_logs_on_cad_unit_id"
+    t.index ["changed_at"], name: "index_unit_status_logs_on_changed_at"
+    t.index ["changed_by_id"], name: "index_unit_status_logs_on_changed_by_id"
+  end
+
   create_table "units", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.text "description"
@@ -179,8 +265,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_11_155647) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "arrests", "incidents"
   add_foreign_key "arrests", "people"
+  add_foreign_key "bolos", "officers", column: "issuing_officer_id"
+  add_foreign_key "bolos", "users", column: "created_by_id"
+  add_foreign_key "cad_calls", "incidents"
+  add_foreign_key "cad_calls", "users", column: "created_by_id"
+  add_foreign_key "cad_units", "officers", column: "assigned_officer_id"
+  add_foreign_key "call_notes", "cad_calls"
+  add_foreign_key "call_notes", "users"
+  add_foreign_key "call_units", "cad_calls"
+  add_foreign_key "call_units", "cad_units"
   add_foreign_key "evidences", "incidents"
   add_foreign_key "officer_units", "officers"
   add_foreign_key "officer_units", "units"
+  add_foreign_key "unit_status_logs", "cad_units"
+  add_foreign_key "unit_status_logs", "users", column: "changed_by_id"
   add_foreign_key "vehicles", "people"
 end

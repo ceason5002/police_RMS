@@ -1,0 +1,84 @@
+<% content_for :title, "Response Times" %>
+
+<div class="page-header">
+  <h1>Response Time Report</h1>
+  <%= link_to "Reports", cad_reports_path, class: "btn btn-secondary btn-sm" %>
+</div>
+
+<!-- Date filter -->
+<div class="table-card" style="padding:16px 20px;margin-bottom:20px;">
+  <%= form_with url: response_times_cad_reports_path, method: :get, local: true do |f| %>
+    <div style="display:flex;gap:12px;align-items:flex-end;">
+      <div>
+        <%= f.label :from, "From", style: "display:block;font-size:12px;font-weight:500;margin-bottom:4px;" %>
+        <%= f.date_field :from, value: params[:from], style: "padding:7px 10px;border:1px solid #E3E8EF;border-radius:6px;font-size:13px;" %>
+      </div>
+      <div>
+        <%= f.label :to, "To", style: "display:block;font-size:12px;font-weight:500;margin-bottom:4px;" %>
+        <%= f.date_field :to, value: params[:to], style: "padding:7px 10px;border:1px solid #E3E8EF;border-radius:6px;font-size:13px;" %>
+      </div>
+      <%= f.submit "Apply", class: "btn btn-secondary btn-sm" %>
+    </div>
+  <% end %>
+</div>
+
+<!-- Summary Stats -->
+<% if @avg_response_time %>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;">
+    <div class="table-card" style="padding:20px 24px;text-align:center;">
+      <div style="font-size:28px;font-weight:700;color:#635BFF;"><%= @avg_response_time %>m</div>
+      <div style="font-size:12px;color:#8898AA;margin-top:4px;">Avg Dispatch Time</div>
+    </div>
+    <div class="table-card" style="padding:20px 24px;text-align:center;">
+      <div style="font-size:28px;font-weight:700;color:#1EA672;"><%= @min_response_time %>m</div>
+      <div style="font-size:12px;color:#8898AA;margin-top:4px;">Fastest</div>
+    </div>
+    <div class="table-card" style="padding:20px 24px;text-align:center;">
+      <div style="font-size:28px;font-weight:700;color:#DF1B41;"><%= @max_response_time %>m</div>
+      <div style="font-size:12px;color:#8898AA;margin-top:4px;">Slowest</div>
+    </div>
+    <div class="table-card" style="padding:20px 24px;text-align:center;">
+      <div style="font-size:28px;font-weight:700;color:#0A2540;"><%= @median_response_time %>m</div>
+      <div style="font-size:12px;color:#8898AA;margin-top:4px;">Median</div>
+    </div>
+  </div>
+<% end %>
+
+<div class="table-card">
+  <% if @calls.empty? %>
+    <div class="empty-state"><p>No dispatched calls found for this period.</p></div>
+  <% else %>
+    <table class="rms-table">
+      <thead>
+        <tr><th>P</th><th>Call #</th><th>Type</th><th>Received</th><th>Dispatch Time</th><th>Travel Time</th><th>Units</th></tr>
+      </thead>
+      <tbody>
+        <% @calls.each do |call| %>
+          <tr style="<%= priority_row_style(call.priority) %>">
+            <td><%= priority_badge(call.priority) %></td>
+            <td class="col-primary"><%= link_to call.call_number, cad_call_path(call) %></td>
+            <td><%= call.call_type %></td>
+            <td style="font-size:12px;color:#8898AA;"><%= call.received_at.strftime("%m/%d %H:%M") %></td>
+            <td>
+              <% if call.response_time_minutes %>
+                <span style="font-weight:600;color:<%= call.response_time_minutes > 10 ? '#DF1B41' : call.response_time_minutes > 5 ? '#F97316' : '#1EA672' %>;">
+                  <%= call.response_time_minutes %> min
+                </span>
+              <% else %>
+                <span style="color:#8898AA;">—</span>
+              <% end %>
+            </td>
+            <td>
+              <% if call.on_scene_time_minutes %>
+                <span style="font-weight:600;"><%= call.on_scene_time_minutes %> min</span>
+              <% else %>
+                <span style="color:#8898AA;">—</span>
+              <% end %>
+            </td>
+            <td style="font-size:12px;color:#8898AA;"><%= call.cad_units.map(&:unit_number).join(", ").presence || "—" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>

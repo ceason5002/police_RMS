@@ -1,0 +1,28 @@
+<% if unit.errors.any? %>
+  <div class="error-box">
+    <strong><%= pluralize(unit.errors.count, "error") %>:</strong>
+    <ul><% unit.errors.full_messages.each do |m| %><li><%= m %></li><% end %></ul>
+  </div>
+<% end %>
+
+<div>
+  <%= f.label :unit_number, "Unit Number *" %>
+  <%= f.text_field :unit_number, placeholder: "Unit-1, K9-2, etc.", required: true %>
+</div>
+
+<div>
+  <%= f.label :unit_type, "Unit Type *" %>
+  <%= f.select :unit_type, CadUnit::UNIT_TYPES, { prompt: "Select type…" }, required: true %>
+</div>
+
+<div>
+  <%= f.label :assigned_officer_id, "Assigned Officer" %>
+  <%= f.select :assigned_officer_id,
+        Officer.active.order(:last_name).map { |o| ["#{o.full_name} — #{o.rank}", o.id] },
+        { prompt: "Unassigned" } %>
+</div>
+
+<div>
+  <%= f.label :status, "Status *" %>
+  <%= f.select :status, CadUnit::STATUSES, {}, required: true %>
+</div>

@@ -1,0 +1,104 @@
+<% content_for :title, @unit.unit_number %>
+
+<div class="page-header">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <h1><%= @unit.unit_number %></h1>
+    <%= unit_status_badge(@unit.status) %>
+  </div>
+  <div class="detail-actions">
+    <%= link_to "Units", cad_cad_units_path, class: "btn btn-secondary btn-sm" %>
+    <%= link_to "Edit", edit_cad_cad_unit_path(@unit), class: "btn btn-secondary btn-sm" %>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
+
+  <!-- Unit Info -->
+  <div class="detail-card">
+    <div class="detail-card-header"><h2>Unit Information</h2></div>
+    <dl class="detail-grid">
+      <div class="detail-field">
+        <dt>Unit Number</dt><dd><%= @unit.unit_number %></dd>
+      </div>
+      <div class="detail-field">
+        <dt>Type</dt><dd><%= @unit.unit_type %></dd>
+      </div>
+      <div class="detail-field">
+        <dt>Status</dt><dd><%= unit_status_badge(@unit.status) %></dd>
+      </div>
+      <div class="detail-field">
+        <dt>Assigned Officer</dt>
+        <dd>
+          <% if @unit.assigned_officer %>
+            <%= link_to @unit.assigned_officer.full_name, officer_path(@unit.assigned_officer) %>
+            <span style="color:#8898AA;font-size:12px;"> · <%= @unit.assigned_officer.rank %></span>
+          <% else %>
+            <span style="color:#8898AA;">Unassigned</span>
+          <% end %>
+        </dd>
+      </div>
+    </dl>
+  </div>
+
+  <!-- Change Status -->
+  <div class="detail-card">
+    <div class="detail-card-header"><h2>Change Status</h2></div>
+    <div style="padding:20px 24px;display:flex;flex-direction:column;gap:8px;">
+      <% CadUnit::STATUSES.each do |s| %>
+        <%= button_to s, change_status_cad_cad_unit_path(@unit, status: s),
+              method: :patch,
+              class: "btn #{s == @unit.status ? 'btn-primary' : 'btn-secondary'}",
+              disabled: s == @unit.status,
+              form: { style: "display:block;" } %>
+      <% end %>
+    </div>
+  </div>
+
+</div>
+
+<!-- Active Calls -->
+<% if @active_calls.any? %>
+  <div class="detail-card" style="margin-bottom:20px;">
+    <div class="detail-card-header"><h2>Current Assignments</h2></div>
+    <table class="rms-table">
+      <thead>
+        <tr><th>Call #</th><th>Type</th><th>Priority</th><th>Location</th><th>Status</th><th></th></tr>
+      </thead>
+      <tbody>
+        <% @active_calls.each do |call| %>
+          <tr>
+            <td class="col-primary"><%= call.call_number %></td>
+            <td><%= call.call_type %></td>
+            <td><%= priority_badge(call.priority) %></td>
+            <td><%= call.location.truncate(40) %></td>
+            <td><%= call_status_badge(call.status) %></td>
+            <td><%= link_to "View", cad_call_path(call), class: "btn btn-secondary btn-sm" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>
+
+<!-- Status Log -->
+<div class="detail-card">
+  <div class="detail-card-header"><h2>Status History</h2></div>
+  <% if @status_logs.any? %>
+    <table class="rms-table">
+      <thead>
+        <tr><th>Timestamp</th><th>Status</th><th>Changed By</th></tr>
+      </thead>
+      <tbody>
+        <% @status_logs.each do |log| %>
+          <tr>
+            <td style="font-size:12px;color:#8898AA;"><%= log.changed_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+            <td><%= unit_status_badge(log.status) %></td>
+            <td style="font-size:12px;"><%= log.changed_by&.display_name || "System" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <div style="padding:20px 24px;color:#8898AA;font-size:13px;">No status history yet.</div>
+  <% end %>
+</div>

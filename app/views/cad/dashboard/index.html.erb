@@ -1,0 +1,99 @@
+<% content_for :title, "CAD Dashboard" %>
+<% content_for :full_bleed do %>
+
+<!-- BOLO Banner -->
+<% if @active_bolos.any? %>
+  <div class="bolo-banner">
+    <span class="bolo-banner-label">ACTIVE BOLO</span>
+    <div class="bolo-banner-items">
+      <% @active_bolos.each do |bolo| %>
+        <%= link_to bolo.summary, cad_bolo_path(bolo), class: "bolo-banner-item" %>
+      <% end %>
+    </div>
+    <%= link_to "View All", cad_bolos_path, class: "bolo-banner-link" %>
+  </div>
+<% end %>
+
+<!-- Stats bar -->
+<div class="cad-stats-bar">
+  <div class="cad-stat">
+    <span class="cad-stat-val"><%= @stats[:active_calls] %></span>
+    <span class="cad-stat-label">Active Calls</span>
+  </div>
+  <div class="cad-stat cad-stat-warn">
+    <span class="cad-stat-val"><%= @stats[:pending_calls] %></span>
+    <span class="cad-stat-label">Pending</span>
+  </div>
+  <div class="cad-stat cad-stat-good">
+    <span class="cad-stat-val"><%= @stats[:available_units] %></span>
+    <span class="cad-stat-label">Available Units</span>
+  </div>
+  <div class="cad-stat">
+    <span class="cad-stat-val"><%= @stats[:cleared_today] %></span>
+    <span class="cad-stat-label">Cleared Today</span>
+  </div>
+  <% if @stats[:active_bolos] > 0 %>
+    <div class="cad-stat cad-stat-danger">
+      <span class="cad-stat-val"><%= @stats[:active_bolos] %></span>
+      <span class="cad-stat-label">Active BOLOs</span>
+    </div>
+  <% end %>
+  <div style="flex:1;"></div>
+  <%= link_to "+ New Call", new_cad_call_path, class: "btn btn-primary btn-sm", style: "align-self:center;margin-right:16px;" %>
+  <%= link_to "+ New BOLO", new_cad_bolo_path, class: "btn btn-danger btn-sm", style: "align-self:center;margin-right:16px;" %>
+</div>
+
+<!-- Split screen: left panel + map -->
+<div class="cad-split" data-controller="cad-refresh" data-cad-refresh-interval-value="20000">
+
+  <!-- Left: Active Calls + Unit Board -->
+  <div class="cad-left">
+
+    <!-- Active Calls Queue -->
+    <div class="cad-section-header">
+      <span>Active Calls (<%= @active_calls.size %>)</span>
+      <%= link_to "All Calls", cad_calls_path, style: "font-size:11px;color:rgba(255,255,255,0.5);text-decoration:none;" %>
+    </div>
+
+    <turbo-frame id="active-calls-frame">
+      <div class="calls-queue">
+        <% if @active_calls.empty? %>
+          <div class="cad-empty">No active calls — all clear</div>
+        <% else %>
+          <% @active_calls.each do |call| %>
+            <%= render "cad/calls/call_card", call: call %>
+          <% end %>
+        <% end %>
+      </div>
+    </turbo-frame>
+
+    <!-- Unit Status Board -->
+    <div class="cad-section-header" style="margin-top:0;">
+      <span>Unit Status Board (<%= @units.size %>)</span>
+      <%= link_to "Manage Units", cad_cad_units_path, style: "font-size:11px;color:rgba(255,255,255,0.5);text-decoration:none;" %>
+    </div>
+
+    <turbo-frame id="unit-board-frame">
+      <div class="unit-board">
+        <% if @units.empty? %>
+          <div class="cad-empty">No units configured</div>
+        <% else %>
+          <% @units.each do |unit| %>
+            <%= render "cad/cad_units/unit_board_card", unit: unit %>
+          <% end %>
+        <% end %>
+      </div>
+    </turbo-frame>
+
+  </div>
+
+  <!-- Right: Live Map -->
+  <div class="cad-right">
+    <div id="cad-live-map"
+         data-controller="cad-map"
+         data-cad-map-calls-url-value="<%= active_calls_data_cad_calls_path(format: :json) %>"
+         style="height:100%;width:100%;"></div>
+  </div>
+
+</div>
+<% end %>

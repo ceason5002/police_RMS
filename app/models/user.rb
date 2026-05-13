@@ -2,7 +2,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  ROLES = %w[admin detective patrol_officer].freeze
+  ROLES = %w[admin supervisor dispatcher detective patrol_officer].freeze
 
   belongs_to :officer, optional: true
   has_many :audit_logs, foreign_key: :user_id
@@ -17,8 +17,14 @@ class User < ApplicationRecord
   scope :active, -> { where(active: true) }
 
   def admin?          = role == "admin"
+  def supervisor?     = role == "supervisor"
+  def dispatcher?     = role == "dispatcher"
   def detective?      = role == "detective"
   def patrol_officer? = role == "patrol_officer"
+
+  def cad_access?
+    admin? || supervisor? || dispatcher?
+  end
 
   def display_role
     role&.humanize

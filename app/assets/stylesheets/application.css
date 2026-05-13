@@ -295,3 +295,232 @@ form input[type="submit"]:hover { background: var(--primary-dark); }
 /* ─── Map overrides ─── */
 [data-map-target="container"] { border-radius: var(--radius) !important; }
 [data-map-target="search"] { margin-bottom: 0 !important; }
+
+/* ══════════════════════════════════════════════════════════════
+   CAD — Computer-Aided Dispatch
+   ══════════════════════════════════════════════════════════════ */
+
+/* ─── Priority colors ─── */
+:root {
+  --p1: #DF1B41;
+  --p2: #F97316;
+  --p3: #EAB308;
+  --p4: #3B82F6;
+  --p5: #8898AA;
+}
+
+/* ─── BOLO Banner ─── */
+.bolo-banner {
+  background: linear-gradient(90deg, #7F1D1D, #DF1B41);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 20px;
+  font-size: 13px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.bolo-banner-label {
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  background: rgba(0,0,0,0.2);
+  padding: 3px 10px;
+  border-radius: 100px;
+}
+.bolo-banner-items { display: flex; gap: 16px; flex: 1; overflow: hidden; }
+.bolo-banner-item  { color: rgba(255,255,255,0.9); text-decoration: none; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bolo-banner-item:hover { color: #fff; text-decoration: underline; }
+.bolo-banner-link  { color: rgba(255,255,255,0.7); font-size: 12px; text-decoration: none; white-space: nowrap; }
+.bolo-banner-link:hover { color: #fff; }
+
+/* ─── Stats bar ─── */
+.cad-stats-bar {
+  display: flex;
+  align-items: stretch;
+  background: #0A2540;
+  padding: 0 20px;
+  gap: 0;
+  flex-shrink: 0;
+}
+.cad-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 20px;
+  border-right: 1px solid rgba(255,255,255,0.08);
+}
+.cad-stat-val   { font-size: 22px; font-weight: 700; color: #fff; line-height: 1; }
+.cad-stat-label { font-size: 10px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 3px; }
+.cad-stat-warn  .cad-stat-val { color: #FCD34D; }
+.cad-stat-good  .cad-stat-val { color: #34D399; }
+.cad-stat-danger .cad-stat-val { color: var(--p1); }
+
+/* ─── Split-screen layout ─── */
+.cad-split {
+  display: flex;
+  flex: 1;
+  height: calc(100vh - 52px - 42px);  /* minus nav + stats bar */
+  overflow: hidden;
+}
+.cad-left {
+  width: 380px;
+  min-width: 320px;
+  background: #101828;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.cad-right {
+  flex: 1;
+  overflow: hidden;
+  background: #e5e0d8;
+}
+.cad-section-header {
+  background: #1C2B3A;
+  padding: 8px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+/* ─── Calls Queue ─── */
+.calls-queue {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 55vh;
+}
+.cad-empty {
+  color: rgba(255,255,255,0.3);
+  font-size: 13px;
+  text-align: center;
+  padding: 24px;
+}
+
+/* ─── Call Card ─── */
+.call-card {
+  background: #1C2B3A;
+  border-radius: 8px;
+  padding: 10px 12px;
+  border-left: 4px solid var(--p3);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.call-card:hover { background: #243447; }
+.call-card.priority-1 { border-left-color: var(--p1); }
+.call-card.priority-2 { border-left-color: var(--p2); }
+.call-card.priority-3 { border-left-color: var(--p3); }
+.call-card.priority-4 { border-left-color: var(--p4); }
+.call-card.priority-5 { border-left-color: var(--p5); }
+
+.call-card-top    { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.call-card-left   { display: flex; align-items: center; gap: 6px; }
+.call-card-number { font-weight: 600; color: #fff; font-size: 13px; }
+.call-card-time   { color: rgba(255,255,255,0.4); font-size: 11px; }
+.call-card-type   { color: rgba(255,255,255,0.85); font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+.call-card-location { color: rgba(255,255,255,0.5); font-size: 11px; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.call-card-units  { color: rgba(255,255,255,0.4); font-size: 11px; margin-bottom: 4px; }
+.call-card-actions { display: flex; gap: 6px; margin-top: 6px; }
+.call-card-link   { color: rgba(255,255,255,0.5); font-size: 11px; text-decoration: none; padding: 3px 8px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; }
+.call-card-link:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+.call-card-btn {
+  font-size: 11px; font-weight: 600; color: #fff;
+  padding: 3px 10px; border: none; border-radius: 4px;
+  cursor: pointer; background: rgba(255,255,255,0.15);
+  font-family: inherit; transition: background 0.1s;
+}
+.call-card-btn:hover { background: rgba(255,255,255,0.25); }
+.call-card-btn.call-card-btn-priority-1 { background: var(--p1); }
+.call-card-btn.call-card-btn-priority-1:hover { background: #b81534; }
+.call-card-btn.call-card-btn-priority-2 { background: var(--p2); }
+.call-card-btn.call-card-btn-priority-3 { background: #ca9a08; color: #000; }
+
+/* ─── Unit Board ─── */
+.unit-board {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+  overflow-y: auto;
+  flex: 1;
+}
+.unit-card {
+  background: #1C2B3A;
+  border-radius: 6px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background 0.1s;
+}
+.unit-card:hover { background: #243447; }
+.unit-card-number  { font-weight: 700; color: #fff; font-size: 13px; min-width: 60px; }
+.unit-card-type    { color: rgba(255,255,255,0.45); font-size: 11px; min-width: 64px; }
+.unit-card-officer { color: rgba(255,255,255,0.5); font-size: 11px; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.unit-card-edit    { color: rgba(255,255,255,0.3); font-size: 14px; text-decoration: none; margin-left: auto; }
+.unit-card-edit:hover { color: #fff; }
+
+/* ─── Unit status tiles (index page) ─── */
+.unit-status-tile {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  min-width: 130px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+.unit-status-tile.available   { border-top: 3px solid #1EA672; }
+.unit-status-tile.dispatched  { border-top: 3px solid var(--p3); }
+.unit-status-tile.on-scene    { border-top: 3px solid var(--p4); }
+.unit-status-tile.out-of-service { border-top: 3px solid var(--p1); }
+.unit-status-tile.off-duty    { border-top: 3px solid var(--p5); }
+.ust-number   { font-weight: 700; font-size: 16px; color: var(--dark); margin-bottom: 2px; }
+.ust-type     { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+.ust-officer  { font-size: 11px; color: var(--body); margin-top: 4px; }
+.ust-links    { margin-top: 8px; }
+.ust-links a  { font-size: 11px; color: var(--primary); text-decoration: none; }
+
+/* ─── BOLO Cards ─── */
+.bolo-card {
+  background: var(--white);
+  border: 1px solid #FCA5A5;
+  border-left: 5px solid var(--p1);
+  border-radius: var(--radius-lg);
+  padding: 14px 18px;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow-sm);
+}
+.bolo-card-top  { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.bolo-field     { font-size: 13px; color: var(--body); margin-bottom: 4px; }
+.bolo-field-label { font-weight: 600; color: var(--dark); margin-right: 8px; }
+
+/* ─── Call Log ─── */
+.call-log       { border-top: 1px solid var(--border); padding-top: 0; }
+.call-log-entry { padding: 12px 0; border-bottom: 1px solid #F2F5F8; }
+.call-log-entry:last-child { border-bottom: none; }
+.call-log-meta  { display: flex; gap: 12px; align-items: center; margin-bottom: 4px; }
+.call-log-time  { font-size: 11px; color: var(--muted); font-family: monospace; }
+.call-log-user  { font-size: 11px; font-weight: 600; color: var(--primary); }
+.call-log-body  { font-size: 13px; color: var(--body); white-space: pre-line; }
+
+/* ─── Priority row tinting ─── */
+tr.p1-row td { background: rgba(223,27,65,0.04); }
+
+/* ─── Leaflet popup override ─── */
+.leaflet-popup-content-wrapper { border-radius: 8px !important; box-shadow: 0 4px 20px rgba(0,0,0,0.2) !important; }
+.leaflet-popup-content { margin: 14px 16px !important; }

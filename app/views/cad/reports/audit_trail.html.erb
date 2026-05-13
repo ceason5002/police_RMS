@@ -1,0 +1,57 @@
+<% content_for :title, "Unit Audit Trail" %>
+
+<div class="page-header">
+  <h1>Unit Status Audit Trail</h1>
+  <%= link_to "Reports", cad_reports_path, class: "btn btn-secondary btn-sm" %>
+</div>
+
+<!-- Filters -->
+<div class="table-card" style="padding:16px 20px;margin-bottom:20px;">
+  <%= form_with url: audit_trail_cad_reports_path, method: :get, local: true do |f| %>
+    <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
+      <div>
+        <%= f.label :from, "From", style: "display:block;font-size:12px;font-weight:500;margin-bottom:4px;" %>
+        <%= f.date_field :from, value: params[:from], style: "padding:7px 10px;border:1px solid #E3E8EF;border-radius:6px;font-size:13px;" %>
+      </div>
+      <div>
+        <%= f.label :to, "To", style: "display:block;font-size:12px;font-weight:500;margin-bottom:4px;" %>
+        <%= f.date_field :to, value: params[:to], style: "padding:7px 10px;border:1px solid #E3E8EF;border-radius:6px;font-size:13px;" %>
+      </div>
+      <div>
+        <%= f.label :unit, "Unit #", style: "display:block;font-size:12px;font-weight:500;margin-bottom:4px;" %>
+        <%= f.text_field :unit, value: params[:unit], placeholder: "Unit-1", style: "width:110px;padding:7px 10px;border:1px solid #E3E8EF;border-radius:6px;font-size:13px;" %>
+      </div>
+      <%= f.submit "Filter", class: "btn btn-secondary btn-sm" %>
+      <%= link_to "Clear", audit_trail_cad_reports_path, class: "btn btn-secondary btn-sm" %>
+    </div>
+  <% end %>
+</div>
+
+<p style="font-size:12px;color:#8898AA;margin-bottom:12px;"><%= @logs.size %> records</p>
+
+<div class="table-card">
+  <% if @logs.empty? %>
+    <div class="empty-state"><p>No status changes found.</p></div>
+  <% else %>
+    <table class="rms-table">
+      <thead>
+        <tr>
+          <th>Timestamp</th>
+          <th>Unit</th>
+          <th>New Status</th>
+          <th>Changed By</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @logs.each do |log| %>
+          <tr>
+            <td style="font-size:12px;color:#8898AA;white-space:nowrap;"><%= log.changed_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+            <td class="col-primary"><%= log.cad_unit&.unit_number || "—" %></td>
+            <td><%= unit_status_badge(log.status) %></td>
+            <td style="font-size:12px;"><%= log.changed_by&.display_name || "System" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>

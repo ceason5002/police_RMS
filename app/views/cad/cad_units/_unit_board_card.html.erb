@@ -1,0 +1,9 @@
+<div class="unit-card" id="unit-card-<%= unit.id %>">
+  <div class="unit-card-number"><%= unit.unit_number %></div>
+  <div class="unit-card-type"><%= unit.unit_type %></div>
+  <%= unit_status_badge(unit.status) %>
+  <% if unit.assigned_officer %>
+    <div class="unit-card-officer"><%= unit.assigned_officer.full_name %></div>
+  <% end %>
+  <%= link_to "Edit", cad_cad_unit_path(unit), class: "unit-card-edit" %>
+</div>

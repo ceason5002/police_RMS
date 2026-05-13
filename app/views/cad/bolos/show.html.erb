@@ -1,0 +1,62 @@
+<% content_for :title, "BOLO ##{@bolo.id}" %>
+
+<div class="page-header">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <h1>BOLO #<%= @bolo.id %></h1>
+    <%= bolo_status_badge(@bolo) %>
+  </div>
+  <div class="detail-actions">
+    <%= link_to "BOLOs", cad_bolos_path, class: "btn btn-secondary btn-sm" %>
+    <%= link_to "Edit", edit_cad_bolo_path(@bolo), class: "btn btn-secondary btn-sm" %>
+    <% if @bolo.active? %>
+      <%= button_to "Resolve", resolve_cad_bolo_path(@bolo), method: :patch, class: "btn btn-secondary btn-sm" %>
+      <%= button_to "Cancel", cancel_cad_bolo_path(@bolo), method: :patch, class: "btn btn-danger btn-sm" %>
+    <% end %>
+  </div>
+</div>
+
+<div class="detail-card">
+  <div class="detail-card-header"><h2>BOLO Details</h2></div>
+  <dl class="detail-grid">
+    <div class="detail-field">
+      <dt>Status</dt>
+      <dd><%= bolo_status_badge(@bolo) %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>Issued By</dt>
+      <dd><%= @bolo.issuing_officer&.full_name || "—" %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>Created By (Dispatcher)</dt>
+      <dd><%= @bolo.created_by&.display_name || "—" %></dd>
+    </div>
+    <div class="detail-field">
+      <dt>Issue Date</dt>
+      <dd><%= @bolo.created_at.strftime("%Y-%m-%d %H:%M") %></dd>
+    </div>
+    <% if @bolo.expires_at %>
+      <div class="detail-field">
+        <dt>Expires</dt>
+        <dd><%= @bolo.expires_at.strftime("%Y-%m-%d %H:%M") %></dd>
+      </div>
+    <% end %>
+    <% if @bolo.last_known_location.present? %>
+      <div class="detail-field span-full">
+        <dt>Last Known Location</dt>
+        <dd><%= @bolo.last_known_location %></dd>
+      </div>
+    <% end %>
+    <% if @bolo.subject_description.present? %>
+      <div class="detail-field span-full">
+        <dt>Subject Description</dt>
+        <dd style="white-space:pre-line;"><%= @bolo.subject_description %></dd>
+      </div>
+    <% end %>
+    <% if @bolo.vehicle_description.present? %>
+      <div class="detail-field span-full">
+        <dt>Vehicle Description</dt>
+        <dd style="white-space:pre-line;"><%= @bolo.vehicle_description %></dd>
+      </div>
+    <% end %>
+  </dl>
+</div>

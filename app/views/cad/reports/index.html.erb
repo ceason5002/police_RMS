@@ -1,0 +1,64 @@
+<% content_for :title, "CAD Reports" %>
+
+<div class="page-header">
+  <h1>CAD Reports</h1>
+</div>
+
+<!-- Today's stats -->
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px;">
+  <div class="table-card" style="padding:20px 24px;text-align:center;">
+    <div style="font-size:32px;font-weight:700;color:#0A2540;"><%= @today_stats[:total] %></div>
+    <div style="font-size:12px;color:#8898AA;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;margin-top:4px;">Calls Today</div>
+  </div>
+  <div class="table-card" style="padding:20px 24px;text-align:center;">
+    <div style="font-size:32px;font-weight:700;color:#1EA672;"><%= @today_stats[:cleared] %></div>
+    <div style="font-size:12px;color:#8898AA;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;margin-top:4px;">Cleared Today</div>
+  </div>
+  <div class="table-card" style="padding:20px 24px;text-align:center;">
+    <div style="font-size:32px;font-weight:700;color:#635BFF;"><%= @today_stats[:active] %></div>
+    <div style="font-size:12px;color:#8898AA;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;margin-top:4px;">Active Now</div>
+  </div>
+  <div class="table-card" style="padding:20px 24px;text-align:center;">
+    <div style="font-size:32px;font-weight:700;color:#DF1B41;"><%= @today_stats[:bolos] %></div>
+    <div style="font-size:12px;color:#8898AA;font-weight:500;text-transform:uppercase;letter-spacing:0.5px;margin-top:4px;">Active BOLOs</div>
+  </div>
+</div>
+
+<!-- Report links -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+  <%= link_to call_history_cad_reports_path, class: "detail-card", style: "text-decoration:none;cursor:pointer;" do %>
+    <div class="detail-card-header">
+      <h2>Call History</h2>
+    </div>
+    <div style="padding:16px 24px;color:#8898AA;font-size:13px;">
+      Full searchable log of all calls — filter by date, type, unit, or status.
+    </div>
+  <% end %>
+
+  <%= link_to response_times_cad_reports_path, class: "detail-card", style: "text-decoration:none;cursor:pointer;" do %>
+    <div class="detail-card-header">
+      <h2>Response Times</h2>
+    </div>
+    <div style="padding:16px 24px;color:#8898AA;font-size:13px;">
+      Average, min, max, and median dispatch and on-scene response times.
+    </div>
+  <% end %>
+
+  <%= link_to shift_summary_cad_reports_path, class: "detail-card", style: "text-decoration:none;cursor:pointer;" do %>
+    <div class="detail-card-header">
+      <h2>Shift Summary</h2>
+    </div>
+    <div style="padding:16px 24px;color:#8898AA;font-size:13px;">
+      Calls per dispatcher, call type breakdown, and daily totals for any shift date.
+    </div>
+  <% end %>
+
+  <%= link_to audit_trail_cad_reports_path, class: "detail-card", style: "text-decoration:none;cursor:pointer;" do %>
+    <div class="detail-card-header">
+      <h2>Unit Audit Trail</h2>
+    </div>
+    <div style="padding:16px 24px;color:#8898AA;font-size:13px;">
+      Every status change logged with timestamp and responsible dispatcher.
+    </div>
+  <% end %>
+</div>

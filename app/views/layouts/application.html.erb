@@ -23,6 +23,15 @@
         <%= link_to "Vehicles",  vehicles_path %>
         <%= link_to "Evidence",  evidences_path %>
       </div>
+      <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
+        <% if current_user&.cad_access? %>
+          <%= link_to "&#128250; CAD", cad_root_path, style: "color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;font-weight:500;padding:5px 12px;border:1px solid rgba(255,255,255,0.2);border-radius:5px;" %>
+        <% end %>
+        <% if current_user&.admin? %>
+          <%= link_to "Admin", admin_root_path, style: "color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;font-weight:500;padding:5px 12px;border:1px solid rgba(255,255,255,0.2);border-radius:5px;" %>
+        <% end %>
+        <%= link_to "Sign Out", destroy_user_session_path, data: { turbo_method: :delete }, style: "color:rgba(255,255,255,0.5);text-decoration:none;font-size:12px;" %>
+      </div>
     </nav>
     <div class="page-container">
       <% if notice.present? %>
