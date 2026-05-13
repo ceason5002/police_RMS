@@ -2,8 +2,9 @@
 
 <div class="page-header">
   <h1>BOLOs — Be On the Lookout</h1>
-  <%= link_to "+ Issue BOLO", new_cad_bolo_path, class: "btn btn-danger" %>
 </div>
+
+<%= link_to "+ Issue BOLO", new_cad_bolo_path, class: "btn btn-danger", style: "margin-bottom:20px;display:inline-block;" %>
 
 <!-- Active BOLOs -->
 <% if @active_bolos.any? %>
