@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title><%= content_for(:title).present? ? "#{content_for(:title)} | Memphis PD" : "Memphis Police Department" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+  <body class="community-body">
+    <!-- Top bar -->
+    <div class="comm-topbar">
+      <div class="comm-topbar-inner">
+        <span>Non-Emergency: (555) 555-0100</span>
+        <span>Emergency: 911</span>
+        <div style="margin-left:auto;display:flex;gap:12px;align-items:center;">
+          <% if user_signed_in? %>
+            <%= link_to "RMS", root_path, class: "comm-topbar-link" %>
+            <%= link_to "CAD", cad_root_path, class: "comm-topbar-link" %>
+            <span style="color:rgba(255,255,255,0.3);">|</span>
+            <span style="color:rgba(255,255,255,0.7);font-size:11px;"><%= current_user.display_name %></span>
+            <%= button_to "Sign Out", destroy_user_session_path, method: :delete, class: "comm-topbar-btn" %>
+          <% else %>
+            <%= link_to "Sign In", community_officer_login_path, class: "comm-topbar-btn" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main nav -->
+    <header class="comm-header">
+      <div class="comm-header-inner">
+        <a href="<%= community_root_path %>" class="comm-brand">
+          <div class="comm-brand-badge">MPD</div>
+          <div>
+            <div class="comm-brand-name">Memphis Police Department</div>
+            <div class="comm-brand-sub">Community Portal</div>
+          </div>
+        </a>
+        <nav class="comm-nav">
+          <%= link_to "Home",            community_root_path,          class: "comm-nav-link #{active_comm_link(community_root_path, exact: true)}" %>
+          <%= link_to "Crime Map",       community_crime_map_path,     class: "comm-nav-link #{active_comm_link(community_crime_map_path)}" %>
+          <%= link_to "Missing Persons", community_missing_persons_path, class: "comm-nav-link #{active_comm_link(community_missing_persons_path)}" %>
+          <%= link_to "BOLOs",           community_bolos_path,         class: "comm-nav-link #{active_comm_link(community_bolos_path)}" %>
+          <%= link_to "News",            community_news_index_path,    class: "comm-nav-link #{active_comm_link(community_news_index_path)}" %>
+          <%= link_to "Events",          community_events_path,        class: "comm-nav-link #{active_comm_link(community_events_path)}" %>
+          <%= link_to "FAQ",             community_faq_path,           class: "comm-nav-link #{active_comm_link(community_faq_path)}" %>
+        </nav>
+        <div class="comm-header-ctas">
+          <%= link_to "Submit Request", new_community_request_path, class: "comm-btn-outline" %>
+          <%= link_to "Submit Tip",     new_community_tip_path,     class: "comm-btn-primary" %>
+        </div>
+      </div>
+    </header>
+
+    <main class="comm-main">
+      <% if notice.present? %>
+        <div class="comm-flash comm-flash-notice"><%= notice %></div>
+      <% end %>
+      <% if alert.present? %>
+        <div class="comm-flash comm-flash-alert"><%= alert %></div>
+      <% end %>
+      <%= yield %>
+    </main>
+
+    <footer class="comm-footer">
+      <div class="comm-footer-inner">
+        <div class="comm-footer-col">
+          <div class="comm-footer-brand">Memphis Police Department</div>
+          <div class="comm-footer-tagline">Serving and protecting our community</div>
+        </div>
+        <div class="comm-footer-col">
+          <div class="comm-footer-heading">Report</div>
+          <%= link_to "Non-Emergency Request", new_community_request_path, class: "comm-footer-link" %>
+          <%= link_to "Anonymous Tip",         new_community_tip_path,     class: "comm-footer-link" %>
+          <%= link_to "Crime Alerts",          new_community_alert_path,   class: "comm-footer-link" %>
+        </div>
+        <div class="comm-footer-col">
+          <div class="comm-footer-heading">Information</div>
+          <%= link_to "Crime Map",     community_crime_map_path,       class: "comm-footer-link" %>
+          <%= link_to "News",          community_news_index_path,      class: "comm-footer-link" %>
+          <%= link_to "Events",        community_events_path,          class: "comm-footer-link" %>
+          <%= link_to "Spotlight",     community_spotlight_path,       class: "comm-footer-link" %>
+          <%= link_to "FAQ",           community_faq_path,             class: "comm-footer-link" %>
+        </div>
+        <div class="comm-footer-col">
+          <div class="comm-footer-heading">Emergency</div>
+          <div class="comm-footer-contact">Emergency: <strong>911</strong></div>
+          <div class="comm-footer-contact">Non-Emergency: <strong>(555) 555-0100</strong></div>
+          <div class="comm-footer-contact">Tip Line: <strong>(555) 555-0199</strong></div>
+        </div>
+      </div>
+      <div class="comm-footer-bottom">
+        &copy; <%= Date.today.year %> Memphis Police Department. All rights reserved.
+      </div>
+    </footer>
+
+    <!-- AI Chatbot widget -->
+    <div id="comm-chat-widget" data-controller="community-chat">
+      <button class="comm-chat-toggle" data-action="click->community-chat#toggle" aria-label="Open chat">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </button>
+      <div class="comm-chat-panel" data-community-chat-target="panel" hidden>
+        <div class="comm-chat-header">
+          <span>Ask the Department</span>
+          <button class="comm-chat-close" data-action="click->community-chat#close" aria-label="Close chat">&times;</button>
+        </div>
+        <div class="comm-chat-messages" data-community-chat-target="messages">
+          <div class="comm-chat-msg comm-chat-msg--bot">Hi! I can answer questions about reporting crimes, our services, and community programs. How can I help?</div>
+        </div>
+        <div class="comm-chat-input-row">
+          <input type="text" class="comm-chat-input" data-community-chat-target="input"
+                 placeholder="Ask a question..." data-action="keydown.enter->community-chat#send">
+          <button class="comm-chat-send" data-action="click->community-chat#send">Send</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

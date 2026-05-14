@@ -1,0 +1,58 @@
+<% content_for :title, "Community Events" %>
+
+<section class="comm-page-header">
+  <div class="comm-container">
+    <h1>Community Events</h1>
+    <p>Meetings, neighborhood watch events, and department programs open to the public.</p>
+  </div>
+</section>
+
+<div class="comm-container" style="padding:32px 0 48px;">
+  <% if @upcoming.any? %>
+    <h2 class="comm-subsection-title">Upcoming Events</h2>
+    <div class="comm-events-grid">
+      <% @upcoming.each do |event| %>
+        <div class="comm-event-card">
+          <div class="comm-event-card-date">
+            <div class="comm-event-card-month"><%= event.starts_at.strftime("%b") %></div>
+            <div class="comm-event-card-day"><%= event.starts_at.strftime("%-d") %></div>
+          </div>
+          <div class="comm-event-card-body">
+            <span class="comm-event-type-badge"><%= event.event_type %></span>
+            <h3 class="comm-event-card-title"><%= link_to event.title, community_event_path(event), class: "comm-link" %></h3>
+            <div class="comm-event-card-meta">
+              <% if event.location.present? %>
+                <span><%= event.location %></span>
+              <% end %>
+              <span><%= event.starts_at.strftime("%-I:%M %p") %><% if event.ends_at %> – <%= event.ends_at.strftime("%-I:%M %p") %><% end %></span>
+            </div>
+            <% if event.description.present? %>
+              <p class="comm-event-card-desc"><%= truncate(event.description, length: 120) %></p>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="comm-empty-state"><h3>No Upcoming Events</h3><p>Check back soon.</p></div>
+  <% end %>
+
+  <% if @past.any? %>
+    <h2 class="comm-subsection-title" style="color:#94A3B8;margin-top:40px;">Past Events</h2>
+    <div class="comm-table-wrap">
+      <table class="comm-table">
+        <thead><tr><th>Event</th><th>Type</th><th>Location</th><th>Date</th></tr></thead>
+        <tbody>
+          <% @past.each do |event| %>
+            <tr>
+              <td><%= link_to event.title, community_event_path(event), class: "comm-link" %></td>
+              <td><%= event.event_type %></td>
+              <td><%= event.location.presence || "—" %></td>
+              <td style="font-size:12px;color:#94A3B8;"><%= event.starts_at.strftime("%b %-d, %Y") %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>

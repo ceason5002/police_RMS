@@ -1,0 +1,30 @@
+<% content_for :title, "Anonymous Tips" %>
+<div class="page-header">
+  <h1>Anonymous Tips Inbox</h1>
+  <div style="display:flex;gap:8px;">
+    <%= link_to "All",          admin_community_tips_path,                class: "btn btn-secondary btn-sm" %>
+    <%= link_to "New",          admin_community_tips_path(status: "New"), class: "btn btn-secondary btn-sm" %>
+    <%= link_to "Under Review", admin_community_tips_path(status: "Under Review"), class: "btn btn-secondary btn-sm" %>
+  </div>
+</div>
+<div class="table-card">
+  <table class="rms-table">
+    <thead>
+      <tr><th>Type</th><th>Location</th><th>Description</th><th>Status</th><th>Received</th><th class="col-actions"></th></tr>
+    </thead>
+    <tbody>
+      <% @tips.each do |tip| %>
+        <tr>
+          <td><%= tip.tip_type %></td>
+          <td><%= tip.location.presence || "—" %></td>
+          <td><%= truncate(tip.description, length: 60) %></td>
+          <td><span class="badge <%= tip.new? ? 'badge-red' : 'badge-yellow' %>"><%= tip.status %></span></td>
+          <td style="font-size:12px;color:#8898AA;"><%= tip.created_at.strftime("%m/%d %H:%M") %></td>
+          <td class="col-actions">
+            <%= link_to "View", admin_community_tip_path(tip), class: "btn btn-secondary btn-sm" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_13_100006) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_14_100006) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -37,6 +37,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_13_100006) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "alert_subscriptions", force: :cascade do |t|
+    t.boolean "confirmed", default: false, null: false
+    t.datetime "created_at", null: false
+    t.string "email", null: false
+    t.string "token", null: false
+    t.datetime "updated_at", null: false
+    t.string "zip_code", null: false
+    t.index ["email"], name: "index_alert_subscriptions_on_email", unique: true
+    t.index ["token"], name: "index_alert_subscriptions_on_token", unique: true
   end
 
   create_table "arrests", force: :cascade do |t|
@@ -135,6 +146,43 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_13_100006) do
     t.index ["cad_unit_id"], name: "index_call_units_on_cad_unit_id"
   end
 
+  create_table "community_events", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.datetime "ends_at"
+    t.string "event_type", default: "General", null: false
+    t.string "location"
+    t.boolean "published", default: false, null: false
+    t.datetime "starts_at", null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "community_requests", force: :cascade do |t|
+    t.string "contact_email"
+    t.string "contact_name"
+    t.string "contact_phone"
+    t.datetime "created_at", null: false
+    t.text "description", null: false
+    t.integer "incident_id"
+    t.text "internal_notes"
+    t.string "location", null: false
+    t.string "request_type", null: false
+    t.string "status", default: "New", null: false
+    t.datetime "updated_at", null: false
+    t.index ["incident_id"], name: "index_community_requests_on_incident_id"
+  end
+
+  create_table "community_tips", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "description", null: false
+    t.text "internal_notes"
+    t.string "location"
+    t.string "status", default: "New", null: false
+    t.string "tip_type", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "crime_cases", force: :cascade do |t|
     t.string "case_number"
     t.datetime "created_at", null: false
@@ -179,6 +227,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_13_100006) do
     t.string "zip_code"
   end
 
+  create_table "news_posts", force: :cascade do |t|
+    t.string "author_name"
+    t.text "body", null: false
+    t.datetime "created_at", null: false
+    t.datetime "published_at"
+    t.string "status", default: "Draft", null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "officer_units", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "officer_id", null: false
@@ -193,9 +251,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_13_100006) do
     t.text "assignments"
     t.string "badge_number"
     t.datetime "created_at", null: false
+    t.boolean "featured", default: false, null: false
     t.string "first_name"
     t.string "last_name"
     t.string "rank"
+    t.text "spotlight_bio"
     t.datetime "updated_at", null: false
   end
 
@@ -274,6 +334,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_13_100006) do
   add_foreign_key "call_notes", "users"
   add_foreign_key "call_units", "cad_calls"
   add_foreign_key "call_units", "cad_units"
+  add_foreign_key "community_requests", "incidents"
   add_foreign_key "evidences", "incidents"
   add_foreign_key "officer_units", "officers"
   add_foreign_key "officer_units", "units"

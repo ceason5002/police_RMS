@@ -1,4 +1,9 @@
 puts "Clearing existing data..."
+AlertSubscription.destroy_all
+CommunityRequest.destroy_all
+CommunityTip.destroy_all
+NewsPost.destroy_all
+CommunityEvent.destroy_all
 UnitStatusLog.destroy_all
 CallNote.destroy_all
 CallUnit.destroy_all
@@ -460,6 +465,89 @@ Bolo.create!(
   status:              "Resolved"
 )
 
+# ── 11. Community Data ────────────────────────────────────────────────────────
+puts "Seeding community data..."
+
+# News posts
+NewsPost.create!(
+  title: "Department Launches New Community Portal",
+  body: "The Memphis Police Department is proud to announce the launch of our new community portal. Residents can now submit non-emergency requests, anonymous tips, and sign up for crime alerts directly online. We are committed to transparency and community partnership in keeping Memphis safe.",
+  author_name: "Chief Communications Office",
+  status: "Published",
+  published_at: 3.days.ago
+)
+
+NewsPost.create!(
+  title: "Neighborhood Watch Program Expanding to East Side",
+  body: "Following the success of our Westside Neighborhood Watch program, the Memphis Police Department is expanding the initiative to the East Side beginning next month. Interested residents can attend our information session on the 15th at the Community Center. Officers will be on hand to answer questions and help establish block captains.",
+  author_name: "Community Liaison Division",
+  status: "Published",
+  published_at: 1.week.ago
+)
+
+NewsPost.create!(
+  title: "Summer Youth Safety Program Registration Open",
+  body: "Registration is now open for the Memphis PD Summer Youth Safety Program. The 6-week program runs July through August and covers personal safety, bicycle safety, internet safety, and community awareness. Open to ages 8-16. Space is limited — register at the front desk or call (555) 555-0100.",
+  author_name: "Youth Programs Coordinator",
+  status: "Published",
+  published_at: 2.weeks.ago
+)
+
+NewsPost.create!(
+  title: "Upcoming Equipment Upgrade — Coming Soon",
+  body: "Draft post about body camera upgrades.",
+  author_name: "Public Affairs",
+  status: "Draft"
+)
+
+# Events
+CommunityEvent.create!(
+  title: "Neighborhood Watch Info Session — East Side",
+  description: "Learn how to start or join a Neighborhood Watch group in your area. Officers from the Community Liaison Division will present and answer questions.",
+  location: "Memphis Community Center, 200 Center St",
+  event_type: "Neighborhood Watch",
+  starts_at: 15.days.from_now.change(hour: 18, min: 30),
+  ends_at: 15.days.from_now.change(hour: 20, min: 0),
+  published: true
+)
+
+CommunityEvent.create!(
+  title: "Monthly Community Meeting — May",
+  description: "Open community meeting with department leadership. Residents are invited to ask questions, raise concerns, and hear updates on department initiatives.",
+  location: "City Hall, Council Chambers",
+  event_type: "Community Meeting",
+  starts_at: 20.days.from_now.change(hour: 19, min: 0),
+  ends_at: 20.days.from_now.change(hour: 21, min: 0),
+  published: true
+)
+
+CommunityEvent.create!(
+  title: "Police Recruitment Open House",
+  description: "Interested in a career in law enforcement? Join us for an open house at the Memphis PD. Meet officers, learn about hiring requirements, and take a station tour.",
+  location: "Memphis Police HQ, 1 Justice Way",
+  event_type: "Recruitment",
+  starts_at: 30.days.from_now.change(hour: 10, min: 0),
+  ends_at: 30.days.from_now.change(hour: 14, min: 0),
+  published: true
+)
+
+CommunityEvent.create!(
+  title: "Youth Bicycle Safety Clinic",
+  description: "Free bicycle safety clinic for kids ages 6-14. Helmets and safety gear will be provided. Bring your bike!",
+  location: "Riverside Park Pavilion",
+  event_type: "Youth Program",
+  starts_at: 45.days.from_now.change(hour: 9, min: 0),
+  ends_at: 45.days.from_now.change(hour: 12, min: 0),
+  published: true
+)
+
+# Spotlight officer
+spotlight = Officer.order("RANDOM()").first
+spotlight.update!(
+  featured: true,
+  spotlight_bio: "Officer #{spotlight.first_name} #{spotlight.last_name} joined the Memphis Police Department #{rand(3..12)} years ago and has consistently demonstrated outstanding dedication to community service. Known for building trust with residents in their patrol district through proactive community engagement, #{spotlight.first_name} recently received recognition for their work with the department's youth outreach initiative. When not on duty, #{spotlight.first_name} volunteers with the local food bank and coaches youth athletics. We are proud to recognize #{spotlight.first_name} as this month's Officer of the Month."
+)
+
 puts ""
 puts "Done! Seeded:"
 puts "  #{Officer.count}         officers"
@@ -473,7 +561,10 @@ puts "  #{CrimeCase.count}       cases"
 puts "  #{CadUnit.count}         CAD units"
 puts "  #{CadCall.count}         CAD calls"
 puts "  #{Bolo.count}            BOLOs"
+puts "  #{NewsPost.count}        news posts"
+puts "  #{CommunityEvent.count}  community events"
 puts "  #{User.count}            users"
 puts ""
 puts "Admin login:      M1234 / Admin1234!"
 puts "Dispatcher login: D1001 / password123"
+puts "Community portal: /community"

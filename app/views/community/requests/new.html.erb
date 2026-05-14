@@ -1,0 +1,62 @@
+<% content_for :title, "Submit Non-Emergency Request" %>
+
+<section class="comm-page-header">
+  <div class="comm-container">
+    <h1>Non-Emergency Request</h1>
+    <p>Use this form to report non-emergency issues. For emergencies, call <strong>911</strong>.</p>
+  </div>
+</section>
+
+<div class="comm-container comm-form-wrap">
+  <%= form_with model: @community_request, url: community_requests_path, class: "comm-form" do |f| %>
+    <% if @community_request.errors.any? %>
+      <div class="comm-form-errors">
+        <% @community_request.errors.full_messages.each do |msg| %>
+          <div><%= msg %></div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div class="comm-field">
+      <%= f.label :request_type, "Type of Request", class: "comm-label" %>
+      <%= f.select :request_type, CommunityRequest::REQUEST_TYPES, { include_blank: "Select a type..." }, class: "comm-select" %>
+    </div>
+
+    <div class="comm-field">
+      <%= f.label :location, "Location / Address", class: "comm-label" %>
+      <%= f.text_field :location, placeholder: "Street address or intersection", class: "comm-input" %>
+    </div>
+
+    <div class="comm-field">
+      <%= f.label :description, "Description", class: "comm-label" %>
+      <%= f.text_area :description, rows: 5, placeholder: "Describe what you observed or what needs attention...", class: "comm-textarea" %>
+    </div>
+
+    <div class="comm-field-section-label">Contact Information (optional — leave blank to submit anonymously)</div>
+
+    <div class="comm-fields-row">
+      <div class="comm-field">
+        <%= f.label :contact_name, "Your Name", class: "comm-label" %>
+        <%= f.text_field :contact_name, class: "comm-input" %>
+      </div>
+      <div class="comm-field">
+        <%= f.label :contact_email, "Email", class: "comm-label" %>
+        <%= f.email_field :contact_email, class: "comm-input" %>
+      </div>
+      <div class="comm-field">
+        <%= f.label :contact_phone, "Phone", class: "comm-label" %>
+        <%= f.telephone_field :contact_phone, class: "comm-input" %>
+      </div>
+    </div>
+
+    <div class="comm-field">
+      <%= f.label :photo, "Attach Photo (optional)", class: "comm-label" %>
+      <%= f.file_field :photo, accept: "image/*", class: "comm-file-input" %>
+    </div>
+
+    <div class="comm-form-actions">
+      <%= f.submit "Submit Request", class: "comm-btn-primary comm-btn-lg" %>
+      <%= link_to "Cancel", community_root_path, class: "comm-btn-ghost" %>
+    </div>
+  <% end %>
+</div>

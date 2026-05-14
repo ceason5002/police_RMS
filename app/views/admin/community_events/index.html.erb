@@ -1,0 +1,25 @@
+<% content_for :title, "Community Events" %>
+<div class="page-header">
+  <h1>Community Events</h1>
+  <%= link_to "+ New Event", new_admin_community_event_path, class: "btn btn-primary" %>
+</div>
+<div class="table-card">
+  <table class="rms-table">
+    <thead><tr><th>Title</th><th>Type</th><th>Location</th><th>Date</th><th>Published</th><th class="col-actions"></th></tr></thead>
+    <tbody>
+      <% @events.each do |event| %>
+        <tr>
+          <td><%= event.title %></td>
+          <td><%= event.event_type %></td>
+          <td><%= event.location.presence || "—" %></td>
+          <td style="font-size:12px;color:#8898AA;"><%= event.starts_at.strftime("%m/%d/%Y %-I:%M %p") %></td>
+          <td><span class="badge <%= event.published ? 'badge-green' : 'badge-gray' %>"><%= event.published ? "Live" : "Draft" %></span></td>
+          <td class="col-actions">
+            <%= link_to "Edit", edit_admin_community_event_path(event), class: "btn btn-secondary btn-sm" %>
+            <%= button_to "Delete", admin_community_event_path(event), method: :delete, class: "btn btn-danger btn-sm", data: { turbo_confirm: "Delete?" } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

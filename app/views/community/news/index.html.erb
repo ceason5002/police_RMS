@@ -1,0 +1,31 @@
+<% content_for :title, "Department News" %>
+
+<section class="comm-page-header">
+  <div class="comm-container">
+    <h1>Department News & Press Releases</h1>
+  </div>
+</section>
+
+<div class="comm-container" style="padding:32px 0 48px;max-width:800px;">
+  <% if @posts.any? %>
+    <div style="display:flex;flex-direction:column;gap:24px;">
+      <% @posts.each do |post| %>
+        <article class="comm-news-card">
+          <div class="comm-news-card-date"><%= post.published_at.strftime("%B %-d, %Y") %></div>
+          <h2 class="comm-news-card-title"><%= link_to post.title, community_news_path(post), class: "comm-link" %></h2>
+          <% if post.author_name.present? %>
+            <div class="comm-news-card-author">By <%= post.author_name %></div>
+          <% end %>
+          <p class="comm-news-card-excerpt"><%= truncate(post.body, length: 250) %></p>
+          <%= link_to "Read More", community_news_path(post), class: "comm-link-arrow" %>
+        </article>
+      <% end %>
+    </div>
+    <%= series_nav(@pagy) if @pagy&.pages&.> 1 %>
+  <% else %>
+    <div class="comm-empty-state">
+      <h3>No News Posts Yet</h3>
+      <p>Check back soon for department news and press releases.</p>
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,36 @@
+<% content_for :title, "Crime Alert Sign-Up" %>
+
+<section class="comm-page-header">
+  <div class="comm-container">
+    <h1>Crime Alert Sign-Up</h1>
+    <p>Receive email notifications when incidents occur in your ZIP code area.</p>
+  </div>
+</section>
+
+<div class="comm-container comm-form-wrap">
+  <%= form_with model: @subscription, url: community_alerts_path, class: "comm-form" do |f| %>
+    <% if @subscription.errors.any? %>
+      <div class="comm-form-errors">
+        <% @subscription.errors.full_messages.each do |msg| %>
+          <div><%= msg %></div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div class="comm-field">
+      <%= f.label :email, "Email Address", class: "comm-label" %>
+      <%= f.email_field :email, placeholder: "you@example.com", class: "comm-input" %>
+    </div>
+
+    <div class="comm-field">
+      <%= f.label :zip_code, "ZIP Code", class: "comm-label" %>
+      <%= f.text_field :zip_code, placeholder: "5-digit ZIP code", maxlength: 5, class: "comm-input" %>
+      <div class="comm-field-hint">You will only receive alerts for incidents in this ZIP code area.</div>
+    </div>
+
+    <div class="comm-form-actions">
+      <%= f.submit "Sign Up for Alerts", class: "comm-btn-primary comm-btn-lg" %>
+      <%= link_to "Cancel", community_root_path, class: "comm-btn-ghost" %>
+    </div>
+  <% end %>
+</div>

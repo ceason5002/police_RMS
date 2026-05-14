@@ -1,0 +1,31 @@
+<% content_for :title, "Community Requests" %>
+<div class="page-header">
+  <h1>Community Requests</h1>
+  <div style="display:flex;gap:8px;">
+    <%= link_to "All",          admin_community_requests_path,                  class: "btn btn-secondary btn-sm #{params[:status].blank? ? 'btn-active' : ''}" %>
+    <%= link_to "New",          admin_community_requests_path(status: "New"),   class: "btn btn-secondary btn-sm" %>
+    <%= link_to "Under Review", admin_community_requests_path(status: "Under Review"), class: "btn btn-secondary btn-sm" %>
+    <%= link_to "Resolved",     admin_community_requests_path(status: "Resolved"), class: "btn btn-secondary btn-sm" %>
+  </div>
+</div>
+<div class="table-card">
+  <table class="rms-table">
+    <thead>
+      <tr><th>Type</th><th>Location</th><th>Contact</th><th>Status</th><th>Submitted</th><th class="col-actions"></th></tr>
+    </thead>
+    <tbody>
+      <% @community_requests.each do |cr| %>
+        <tr>
+          <td><%= cr.request_type %></td>
+          <td><%= truncate(cr.location, length: 50) %></td>
+          <td><%= cr.contact_name.presence || "<em>Anonymous</em>".html_safe %></td>
+          <td><span class="badge <%= cr.new? ? 'badge-red' : (cr.resolved? ? 'badge-green' : 'badge-yellow') %>"><%= cr.status %></span></td>
+          <td style="font-size:12px;color:#8898AA;"><%= cr.created_at.strftime("%m/%d %H:%M") %></td>
+          <td class="col-actions">
+            <%= link_to "View", admin_community_request_path(cr), class: "btn btn-secondary btn-sm" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

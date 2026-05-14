@@ -1,0 +1,37 @@
+<% content_for :title, "Community Request ##{@community_request.id}" %>
+<div class="page-header">
+  <h1>Community Request #<%= @community_request.id %></h1>
+  <div class="detail-actions">
+    <%= link_to "All Requests", admin_community_requests_path, class: "btn btn-secondary btn-sm" %>
+    <% unless @community_request.resolved? %>
+      <%= button_to "Mark Resolved", resolve_admin_community_request_path(@community_request), method: :patch, class: "btn btn-secondary btn-sm" %>
+    <% end %>
+    <%= button_to "Delete", admin_community_request_path(@community_request), method: :delete, class: "btn btn-danger btn-sm", data: { turbo_confirm: "Delete this request?" } %>
+  </div>
+</div>
+<div class="detail-card">
+  <div class="detail-card-header"><h2>Request Details</h2></div>
+  <dl class="detail-grid">
+    <div class="detail-field"><dt>Type</dt><dd><%= @community_request.request_type %></dd></div>
+    <div class="detail-field"><dt>Status</dt><dd><span class="badge <%= @community_request.new? ? 'badge-red' : 'badge-green' %>"><%= @community_request.status %></span></dd></div>
+    <div class="detail-field"><dt>Submitted</dt><dd><%= @community_request.created_at.strftime("%Y-%m-%d %H:%M") %></dd></div>
+    <div class="detail-field"><dt>Contact</dt><dd><%= @community_request.contact_name.presence || "Anonymous" %></dd></div>
+    <div class="detail-field"><dt>Email</dt><dd><%= @community_request.contact_email.presence || "—" %></dd></div>
+    <div class="detail-field"><dt>Phone</dt><dd><%= @community_request.contact_phone.presence || "—" %></dd></div>
+    <div class="detail-field span-full"><dt>Location</dt><dd><%= @community_request.location %></dd></div>
+    <div class="detail-field span-full"><dt>Description</dt><dd style="white-space:pre-line;"><%= @community_request.description %></dd></div>
+    <% if @community_request.incident %>
+      <div class="detail-field span-full"><dt>Linked Incident</dt><dd><%= link_to @community_request.incident.report_number, incident_path(@community_request.incident) %></dd></div>
+    <% end %>
+  </dl>
+</div>
+
+<div class="detail-card" style="margin-top:16px;">
+  <div class="detail-card-header"><h2>Internal Notes</h2></div>
+  <%= form_with model: [:admin, @community_request], method: :patch do |f| %>
+    <%= f.text_area :internal_notes, value: @community_request.internal_notes, rows: 4, style: "width:100%;font-family:inherit;font-size:13px;padding:10px;border:1px solid #E0E6ED;border-radius:6px;" %>
+    <div style="margin-top:8px;">
+      <%= f.submit "Save Notes", class: "btn btn-secondary btn-sm" %>
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,33 @@
+<% content_for :title, "Officer Spotlight" %>
+
+<section class="comm-page-header">
+  <div class="comm-container">
+    <h1>Officer of the Month</h1>
+    <p>Recognizing members of our department who go above and beyond in service to the community.</p>
+  </div>
+</section>
+
+<div class="comm-container" style="padding:40px 0 60px;max-width:760px;">
+  <% if @officer %>
+    <div class="comm-spotlight-card">
+      <div class="comm-spotlight-card-header">
+        <div class="comm-spotlight-avatar">
+          <span><%= @officer.first_name[0] %><%= @officer.last_name[0] %></span>
+        </div>
+        <div>
+          <h2 class="comm-spotlight-officer-name"><%= @officer.full_name %></h2>
+          <div class="comm-spotlight-rank"><%= @officer.rank %></div>
+          <% if @officer.assignments.present? %>
+            <div class="comm-spotlight-assignment"><%= @officer.assignments %></div>
+          <% end %>
+        </div>
+      </div>
+      <div class="comm-spotlight-bio"><%= simple_format(@officer.spotlight_bio) %></div>
+    </div>
+  <% else %>
+    <div class="comm-empty-state">
+      <h3>No Officer Spotlight Yet</h3>
+      <p>Check back soon — we regularly recognize exceptional members of our team.</p>
+    </div>
+  <% end %>
+</div>

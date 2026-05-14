@@ -1,0 +1,21 @@
+<%= form_with model: [:admin, event], class: "detail-card" do |f| %>
+  <% if event.errors.any? %>
+    <div class="flash flash-alert"><%= event.errors.full_messages.join(", ") %></div>
+  <% end %>
+  <div class="detail-card-header"><h2><%= event.new_record? ? "New Event" : "Edit Event" %></h2></div>
+  <div style="padding:20px;display:flex;flex-direction:column;gap:16px;">
+    <div><%= f.label :title, class: "form-label" %><%= f.text_field :title, class: "form-control" %></div>
+    <div><%= f.label :event_type, "Type", class: "form-label" %><%= f.select :event_type, CommunityEvent::EVENT_TYPES, {}, class: "form-select" %></div>
+    <div><%= f.label :location, class: "form-label" %><%= f.text_field :location, class: "form-control" %></div>
+    <div class="form-row">
+      <div><%= f.label :starts_at, "Start Date/Time", class: "form-label" %><%= f.datetime_local_field :starts_at, class: "form-control" %></div>
+      <div><%= f.label :ends_at, "End Date/Time (optional)", class: "form-label" %><%= f.datetime_local_field :ends_at, class: "form-control" %></div>
+    </div>
+    <div><%= f.label :description, class: "form-label" %><%= f.text_area :description, rows: 5, class: "form-control" %></div>
+    <div class="form-check"><%= f.check_box :published, class: "form-check-input" %> <%= f.label :published, "Published (visible on community portal)", class: "form-check-label" %></div>
+    <div>
+      <%= f.submit event.new_record? ? "Create Event" : "Update Event", class: "btn btn-primary" %>
+      <%= link_to "Cancel", admin_community_events_path, class: "btn btn-secondary" %>
+    </div>
+  </div>
+<% end %>

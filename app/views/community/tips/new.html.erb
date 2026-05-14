@@ -1,0 +1,45 @@
+<% content_for :title, "Submit Anonymous Tip" %>
+
+<section class="comm-page-header">
+  <div class="comm-container">
+    <h1>Anonymous Tip Portal</h1>
+    <p>Your tip is completely anonymous. No contact information is collected or logged from this form.</p>
+  </div>
+</section>
+
+<div class="comm-container comm-form-wrap">
+  <div class="comm-tip-notice">
+    <strong>Your anonymity is protected.</strong> We do not collect IP addresses, cookies, or any identifying information with this form.
+    If you have information about a crime in progress, call <strong>911</strong>.
+  </div>
+
+  <%= form_with model: @tip, url: community_tips_path, class: "comm-form" do |f| %>
+    <% if @tip.errors.any? %>
+      <div class="comm-form-errors">
+        <% @tip.errors.full_messages.each do |msg| %>
+          <div><%= msg %></div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div class="comm-field">
+      <%= f.label :tip_type, "Type of Tip", class: "comm-label" %>
+      <%= f.select :tip_type, CommunityTip::TIP_TYPES, { include_blank: "Select a category..." }, class: "comm-select" %>
+    </div>
+
+    <div class="comm-field">
+      <%= f.label :location, "General Location (optional)", class: "comm-label" %>
+      <%= f.text_field :location, placeholder: "Neighborhood, street, or area", class: "comm-input" %>
+    </div>
+
+    <div class="comm-field">
+      <%= f.label :description, "Tip Details", class: "comm-label" %>
+      <%= f.text_area :description, rows: 7, placeholder: "Provide as much detail as you are comfortable sharing — descriptions, dates, times, vehicle descriptions, etc.", class: "comm-textarea" %>
+    </div>
+
+    <div class="comm-form-actions">
+      <%= f.submit "Submit Anonymously", class: "comm-btn-primary comm-btn-lg" %>
+      <%= link_to "Cancel", community_root_path, class: "comm-btn-ghost" %>
+    </div>
+  <% end %>
+</div>

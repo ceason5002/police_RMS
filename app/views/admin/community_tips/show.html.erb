@@ -1,0 +1,21 @@
+<% content_for :title, "Anonymous Tip ##{@tip.id}" %>
+<div class="page-header">
+  <h1>Anonymous Tip #<%= @tip.id %></h1>
+  <div class="detail-actions">
+    <%= link_to "All Tips", admin_community_tips_path, class: "btn btn-secondary btn-sm" %>
+    <% if @tip.new? %>
+      <%= button_to "Mark Under Review", review_admin_community_tip_path(@tip), method: :patch, class: "btn btn-secondary btn-sm" %>
+    <% end %>
+    <%= button_to "Close Tip", close_admin_community_tip_path(@tip), method: :patch, class: "btn btn-secondary btn-sm" %>
+  </div>
+</div>
+<div class="detail-card">
+  <div class="detail-card-header"><h2>Tip Details</h2></div>
+  <dl class="detail-grid">
+    <div class="detail-field"><dt>Category</dt><dd><%= @tip.tip_type %></dd></div>
+    <div class="detail-field"><dt>Status</dt><dd><span class="badge <%= @tip.new? ? 'badge-red' : 'badge-yellow' %>"><%= @tip.status %></span></dd></div>
+    <div class="detail-field"><dt>Received</dt><dd><%= @tip.created_at.strftime("%Y-%m-%d %H:%M") %></dd></div>
+    <div class="detail-field"><dt>Location</dt><dd><%= @tip.location.presence || "Not provided" %></dd></div>
+    <div class="detail-field span-full"><dt>Description</dt><dd style="white-space:pre-line;"><%= @tip.description %></dd></div>
+  </dl>
+</div>

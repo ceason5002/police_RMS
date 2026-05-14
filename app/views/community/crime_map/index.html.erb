@@ -1,0 +1,42 @@
+<% content_for :title, "Crime Map" %>
+
+<section class="comm-page-header">
+  <div class="comm-container">
+    <h1>Community Crime Map</h1>
+    <p>Anonymized incident data for the past 90 days. Exact locations are approximate to protect privacy.</p>
+  </div>
+</section>
+
+<div class="comm-container" style="padding-top:24px;padding-bottom:40px;">
+  <!-- Filters -->
+  <div class="comm-map-filters" data-controller="community-map" data-community-map-data-url-value="<%= community_crime_map_data_path %>">
+    <div class="comm-filter-row">
+      <div class="comm-filter-group">
+        <label class="comm-label">Incident Type</label>
+        <select class="comm-select" data-action="change->community-map#filter" data-community-map-target="typeFilter">
+          <option value="">All Types</option>
+          <% @incident_types.each do |type| %>
+            <option value="<%= type %>"><%= type %></option>
+          <% end %>
+        </select>
+      </div>
+      <div class="comm-filter-group">
+        <label class="comm-label">Time Range</label>
+        <select class="comm-select" data-action="change->community-map#filter" data-community-map-target="daysFilter">
+          <option value="7">Last 7 days</option>
+          <option value="30">Last 30 days</option>
+          <option value="90" selected>Last 90 days</option>
+        </select>
+      </div>
+      <div class="comm-filter-group" style="align-self:flex-end;">
+        <div class="comm-map-legend">
+          <span class="comm-legend-dot" style="background:#DF1B41;"></span> Violent
+          <span class="comm-legend-dot" style="background:#F97316;margin-left:10px;"></span> Property
+          <span class="comm-legend-dot" style="background:#3B82F6;margin-left:10px;"></span> Other
+        </div>
+      </div>
+    </div>
+    <div id="community-crime-map" style="height:520px;border-radius:10px;border:1px solid #E2E8F0;margin-top:16px;"></div>
+    <div class="comm-map-count" data-community-map-target="count" style="margin-top:10px;font-size:13px;color:#64748B;"></div>
+  </div>
+</div>

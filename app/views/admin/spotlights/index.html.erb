@@ -1,0 +1,35 @@
+<% content_for :title, "Officer Spotlight" %>
+<div class="page-header">
+  <h1>Officer of the Month</h1>
+</div>
+
+<% if @featured %>
+  <div class="detail-card" style="margin-bottom:20px;">
+    <div class="detail-card-header"><h2>Current: <%= @featured.full_name %> — <%= @featured.rank %></h2></div>
+    <div style="padding:16px;white-space:pre-line;font-size:14px;"><%= @featured.spotlight_bio %></div>
+    <%= button_to "Clear Spotlight", admin_spotlight_path(@featured), method: :patch,
+        params: { spotlight_bio: "" }, class: "btn btn-secondary btn-sm", style: "margin:0 16px 16px;" %>
+  </div>
+<% end %>
+
+<div class="page-header" style="margin-top:24px;"><h2 style="font-size:16px;">Select an Officer</h2></div>
+<div class="table-card">
+  <table class="rms-table">
+    <thead><tr><th>Name</th><th>Rank</th><th>Badge</th><th class="col-actions"></th></tr></thead>
+    <tbody>
+      <% @officers.each do |officer| %>
+        <tr>
+          <td><%= officer.full_name %> <%= "★" if officer.featured? %></td>
+          <td><%= officer.rank %></td>
+          <td><%= officer.badge_number %></td>
+          <td class="col-actions">
+            <%= form_with url: admin_spotlight_path(officer), method: :patch, style: "display:inline;" do |f| %>
+              <%= f.text_area :spotlight_bio, placeholder: "Write-up for this officer...", rows: 2, style: "width:280px;font-size:12px;padding:6px;border:1px solid #E0E6ED;border-radius:4px;" %>
+              <%= f.submit "Set as Featured", class: "btn btn-primary btn-sm", style: "margin-top:4px;" %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

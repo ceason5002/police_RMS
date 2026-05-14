@@ -1,0 +1,45 @@
+<% content_for :title, "FAQ & Resources" %>
+
+<section class="comm-page-header">
+  <div class="comm-container">
+    <h1>FAQ & Resource Center</h1>
+    <p>Answers to common questions about our department services.</p>
+  </div>
+</section>
+
+<div class="comm-container" style="padding:40px 0 60px;max-width:800px;">
+  <div class="comm-faq-list">
+    <% [
+      ["When should I call 911?",
+       "Call 911 for any emergency — crimes in progress, fires, medical emergencies, or any situation where someone's life or safety is at immediate risk. Do not hesitate to call 911 if you are unsure."],
+      ["What is the non-emergency number?",
+       "Our non-emergency line is (555) 555-0100. Use it for situations that need a police response but are not life-threatening — reporting crimes that already occurred, noise complaints, suspicious activity, or general questions."],
+      ["How do I file a police report?",
+       "You can file a police report by calling our non-emergency line at (555) 555-0100, visiting the police station in person, or — for eligible non-emergency matters — submitting a Non-Emergency Request through this portal. An officer will follow up with you."],
+      ["How do I submit an anonymous tip?",
+       "Use the Anonymous Tip form on this portal. We do not collect any identifying information. You can also call the tip line at (555) 555-0199. Your safety and anonymity are our priority."],
+      ["How do I get a copy of a police report?",
+       "Police report copies can be requested in person at the Records Division during business hours (Mon–Fri, 8am–4pm), or by submitting a written request by mail. A fee may apply. Bring a valid government-issued photo ID."],
+      ["How do I contest a traffic citation?",
+       "Traffic citations can be contested in Traffic Court. Instructions for contesting your citation are printed on the back of the citation. You generally have 30 days from the date of issuance to respond."],
+      ["How do I get a background check?",
+       "Personal background checks can be requested through the Records Division. Third-party background checks must be submitted through an authorized screening agency. Allow 5–10 business days for processing."],
+      ["How do I apply to become a police officer?",
+       "We post open positions on the city's official HR portal. Requirements include a high school diploma (college degree preferred), valid driver's license, and passing a written exam, physical fitness test, and background investigation. See our Events page for upcoming recruitment open houses."],
+      ["What do I do if I witness a crime?",
+       "If a crime is actively happening, call 911 immediately. Do not intervene. If you witnessed a crime that has already occurred, call our non-emergency line at (555) 555-0100 or submit a tip through this portal. Your observations — no matter how minor — can be valuable to investigators."],
+      ["How can I sign up for crime alerts?",
+       "Use the Crime Alert sign-up form on this portal. Enter your email and ZIP code to receive notifications when incidents occur in your area."],
+    ].each do |question, answer| %>
+      <details class="comm-faq-item">
+        <summary class="comm-faq-question"><%= question %></summary>
+        <div class="comm-faq-answer"><%= answer %></div>
+      </details>
+    <% end %>
+  </div>
+
+  <div class="comm-faq-contact">
+    <h3>Still have questions?</h3>
+    <p>Call us at <strong>(555) 555-0100</strong> or use the chat assistant at the bottom right of this page.</p>
+  </div>
+</div>

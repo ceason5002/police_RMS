@@ -1,0 +1,140 @@
+<% content_for :title, "Home" %>
+
+<!-- Hero -->
+<section class="comm-hero">
+  <div class="comm-hero-inner">
+    <h1 class="comm-hero-title">Your Community. Your Safety.</h1>
+    <p class="comm-hero-sub">Report non-emergency issues, submit anonymous tips, view crime data, and stay informed about public safety in your neighborhood.</p>
+    <div class="comm-hero-actions">
+      <%= link_to "View Crime Map",    community_crime_map_path,    class: "comm-btn-primary comm-btn-lg" %>
+      <%= link_to "Submit a Request",  new_community_request_path,  class: "comm-btn-outline-light comm-btn-lg" %>
+      <%= link_to "Submit a Tip",      new_community_tip_path,      class: "comm-btn-outline-light comm-btn-lg" %>
+    </div>
+  </div>
+</section>
+
+<!-- BOLO Banner -->
+<% if @active_bolos.any? %>
+  <div class="comm-bolo-banner">
+    <div class="comm-bolo-banner-inner">
+      <span class="comm-bolo-badge">ACTIVE BOLO</span>
+      <% @active_bolos.each do |bolo| %>
+        <span><%= bolo.summary %></span>
+      <% end %>
+      <%= link_to "View All BOLOs", community_bolos_path, class: "comm-bolo-link" %>
+    </div>
+  </div>
+<% end %>
+
+<!-- Quick actions -->
+<section class="comm-section">
+  <div class="comm-container">
+    <h2 class="comm-section-title">How Can We Help?</h2>
+    <div class="comm-cards-4">
+      <div class="comm-action-card">
+        <div class="comm-action-icon comm-action-icon--blue">
+          <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
+        <h3>Non-Emergency Request</h3>
+        <p>Report noise complaints, abandoned vehicles, graffiti, or suspicious activity without calling 911.</p>
+        <%= link_to "Submit Request", new_community_request_path, class: "comm-btn-primary comm-btn-sm" %>
+      </div>
+      <div class="comm-action-card">
+        <div class="comm-action-icon comm-action-icon--red">
+          <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Anonymous Tip</h3>
+        <p>Report criminal activity anonymously. No login required, no contact information collected.</p>
+        <%= link_to "Submit Tip", new_community_tip_path, class: "comm-btn-primary comm-btn-sm" %>
+      </div>
+      <div class="comm-action-card">
+        <div class="comm-action-icon comm-action-icon--green">
+          <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </div>
+        <h3>Crime Alerts</h3>
+        <p>Sign up to receive email alerts when incidents occur in your ZIP code area.</p>
+        <%= link_to "Sign Up", new_community_alert_path, class: "comm-btn-primary comm-btn-sm" %>
+      </div>
+      <div class="comm-action-card">
+        <div class="comm-action-icon comm-action-icon--purple">
+          <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <h3>Missing Persons</h3>
+        <p><%= @open_requests_count %> active missing persons case<%= @open_requests_count == 1 ? "" : "s" %>. Help bring someone home.</p>
+        <%= link_to "View Cases", community_missing_persons_path, class: "comm-btn-primary comm-btn-sm" %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- News + Events side by side -->
+<section class="comm-section comm-section--gray">
+  <div class="comm-container">
+    <div class="comm-two-col">
+      <div>
+        <div class="comm-section-heading-row">
+          <h2 class="comm-section-title">Latest News</h2>
+          <%= link_to "All News", community_news_index_path, class: "comm-link-sm" %>
+        </div>
+        <% if @recent_news.any? %>
+          <div class="comm-news-list">
+            <% @recent_news.each do |post| %>
+              <div class="comm-news-item">
+                <div class="comm-news-date"><%= post.published_at.strftime("%b %-d, %Y") %></div>
+                <h3 class="comm-news-title"><%= link_to post.title, community_news_path(post), class: "comm-link" %></h3>
+                <p class="comm-news-excerpt"><%= truncate(post.body, length: 120) %></p>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="comm-empty">No news posts yet.</p>
+        <% end %>
+      </div>
+      <div>
+        <div class="comm-section-heading-row">
+          <h2 class="comm-section-title">Upcoming Events</h2>
+          <%= link_to "All Events", community_events_path, class: "comm-link-sm" %>
+        </div>
+        <% if @upcoming_events.any? %>
+          <div class="comm-event-list">
+            <% @upcoming_events.each do |event| %>
+              <div class="comm-event-item">
+                <div class="comm-event-date">
+                  <div class="comm-event-month"><%= event.starts_at.strftime("%b") %></div>
+                  <div class="comm-event-day"><%= event.starts_at.strftime("%-d") %></div>
+                </div>
+                <div>
+                  <div class="comm-event-title"><%= link_to event.title, community_event_path(event), class: "comm-link" %></div>
+                  <div class="comm-event-meta"><%= event.location.presence || "Location TBD" %></div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="comm-empty">No upcoming events.</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Officer spotlight teaser -->
+<% if @spotlight %>
+  <section class="comm-section">
+    <div class="comm-container">
+      <div class="comm-spotlight-banner">
+        <div class="comm-spotlight-text">
+          <div class="comm-spotlight-label">Officer of the Month</div>
+          <h2 class="comm-spotlight-name"><%= @spotlight.full_name %></h2>
+          <p class="comm-spotlight-excerpt"><%= truncate(@spotlight.spotlight_bio, length: 200) %></p>
+          <%= link_to "Read More", community_spotlight_path, class: "comm-btn-primary comm-btn-sm" %>
+        </div>
+        <div class="comm-spotlight-badge-wrap">
+          <div class="comm-spotlight-badge">
+            <span><%= @spotlight.rank %></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+<% end %>

@@ -62,6 +62,34 @@ Rails.application.routes.draw do
       member { patch :toggle_active }
     end
     resources :audit_logs, only: [:index]
+    resources :community_requests do
+      member { patch :resolve; patch :assign }
+    end
+    resources :community_tips do
+      member { patch :review; patch :close }
+    end
+    resources :news_posts
+    resources :community_events
+    resources :alert_subscriptions, only: [:index, :destroy]
+    resources :spotlights, only: [:index, :update]
+  end
+
+  # Community portal (public)
+  namespace :community do
+    root "home#index"
+    get  "crime-map",      to: "crime_map#index",  as: :crime_map
+    get  "crime-map/data", to: "crime_map#data",   as: :crime_map_data
+    resources :requests,       only: [:new, :create]
+    resources :tips,           only: [:new, :create]
+    resources :alerts,         only: [:new, :create, :destroy]
+    resources :missing_persons, only: [:index, :show]
+    resources :bolos,          only: [:index]
+    resources :news,           only: [:index, :show]
+    resources :events,         only: [:index, :show]
+    get "spotlight", to: "spotlight#index", as: :spotlight
+    get "faq",           to: "faq#index",            as: :faq
+    post "chat",         to: "chat#message",         as: :chat
+    get "officer-login", to: "officer_sessions#new", as: :officer_login
   end
 
   # Main app

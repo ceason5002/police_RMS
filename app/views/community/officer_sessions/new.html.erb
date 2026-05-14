@@ -1,0 +1,44 @@
+<% content_for :title, "Officer Login" %>
+
+<div style="min-height:calc(100vh - 220px);display:flex;align-items:center;justify-content:center;padding:48px 16px;background:#F8FAFC;">
+  <div style="width:100%;max-width:400px;">
+
+    <div style="text-align:center;margin-bottom:32px;">
+      <div style="width:64px;height:64px;background:#1B3A6B;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:26px;font-weight:800;color:#fff;letter-spacing:-1px;">MPD</div>
+      <h1 style="font-size:22px;font-weight:700;color:#0F172A;margin:0 0 6px;">Officer Portal Login</h1>
+      <p style="color:#64748B;font-size:14px;margin:0;">Memphis Police Department — Staff Access Only</p>
+    </div>
+
+    <div style="background:#fff;border:1px solid #E2E8F0;border-radius:14px;padding:32px;box-shadow:0 4px 24px rgba(0,0,0,0.06);">
+      <% if flash[:alert].present? %>
+        <div style="background:#FEE2E2;border:1px solid #FECACA;color:#991B1B;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:20px;">
+          <%= flash[:alert] %>
+        </div>
+      <% end %>
+
+      <%= form_with url: user_session_path, method: :post do |f| %>
+        <div style="margin-bottom:18px;">
+          <%= f.label :login_id, "Officer ID", style: "display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:6px;" %>
+          <%= f.text_field :"user[login_id]", autocomplete: "off", autocapitalize: "off", required: true,
+                style: "width:100%;border:1px solid #CBD5E1;border-radius:8px;padding:10px 14px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;",
+                placeholder: "e.g. P1001" %>
+        </div>
+
+        <div style="margin-bottom:24px;">
+          <%= f.label :password, "Password", style: "display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:6px;" %>
+          <%= f.password_field :"user[password]", autocomplete: "current-password", required: true,
+                style: "width:100%;border:1px solid #CBD5E1;border-radius:8px;padding:10px 14px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;",
+                placeholder: "••••••••" %>
+        </div>
+
+        <%= f.submit "Sign In to Officer Portal",
+              style: "width:100%;background:#1B3A6B;color:#fff;border:none;border-radius:8px;padding:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;" %>
+      <% end %>
+    </div>
+
+    <p style="text-align:center;margin-top:20px;font-size:13px;color:#94A3B8;">
+      <%= link_to "Back to Community Portal", community_root_path, style: "color:#1B3A6B;" %>
+    </p>
+
+  </div>
+</div>

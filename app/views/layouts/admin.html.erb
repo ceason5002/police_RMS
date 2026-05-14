@@ -31,6 +31,14 @@
           <%= admin_nav_link "🏢", "Units",           admin_units_path %>
           <%= admin_nav_link "👥", "Suspects & Victims", admin_people_path %>
 
+          <div style="color:rgba(255,255,255,0.3);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;padding:16px 10px 6px;">Community</div>
+          <%= admin_nav_link "📥", "Requests",        admin_community_requests_path %>
+          <%= admin_nav_link "💬", "Tips Inbox",      admin_community_tips_path %>
+          <%= admin_nav_link "📰", "News Posts",      admin_news_posts_path %>
+          <%= admin_nav_link "📅", "Events",          admin_community_events_path %>
+          <%= admin_nav_link "🔔", "Alert Subs",      admin_alert_subscriptions_path %>
+          <%= admin_nav_link "⭐", "Spotlight",       admin_spotlights_path %>
+
           <div style="color:rgba(255,255,255,0.3);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;padding:16px 10px 6px;">System</div>
           <%= admin_nav_link "🔑", "User Access",     admin_users_path %>
           <%= admin_nav_link "📜", "Audit Log",       admin_audit_logs_path %>

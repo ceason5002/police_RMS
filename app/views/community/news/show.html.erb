@@ -1,0 +1,18 @@
+<% content_for :title, @post.title %>
+
+<section class="comm-page-header">
+  <div class="comm-container">
+    <div style="font-size:13px;color:rgba(255,255,255,0.7);margin-bottom:8px;"><%= @post.published_at.strftime("%B %-d, %Y") %></div>
+    <h1><%= @post.title %></h1>
+    <% if @post.author_name.present? %>
+      <div style="font-size:14px;color:rgba(255,255,255,0.8);margin-top:8px;">By <%= @post.author_name %></div>
+    <% end %>
+  </div>
+</section>
+
+<div class="comm-container" style="padding:40px 0 60px;max-width:760px;">
+  <div class="comm-article-body"><%= simple_format(@post.body) %></div>
+  <div style="margin-top:32px;padding-top:24px;border-top:1px solid #E2E8F0;">
+    <%= link_to "Back to News", community_news_index_path, class: "comm-btn-ghost" %>
+  </div>
+</div>

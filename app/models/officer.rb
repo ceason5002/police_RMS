@@ -11,6 +11,9 @@ class Officer < ApplicationRecord
 
   scope :active,   -> { where(active: true) }
   scope :inactive, -> { where(active: false) }
+  scope :featured, -> { where(featured: true) }
 
-  def full_name = "#{first_name} #{last_name}"
+  def full_name     = "#{first_name} #{last_name}"
+  def featured?     = self[:featured]
+  def has_spotlight? = featured? && spotlight_bio.present?
 end

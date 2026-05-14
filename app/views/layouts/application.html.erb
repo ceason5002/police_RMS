@@ -24,6 +24,7 @@
         <%= link_to "Evidence",  evidences_path %>
       </div>
       <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
+        <%= link_to "Community", community_root_path, style: "color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;font-weight:500;padding:5px 12px;border:1px solid rgba(255,255,255,0.2);border-radius:5px;" %>
         <% if current_user&.cad_access? %>
           <%= link_to "CAD", cad_root_path, style: "color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;font-weight:500;padding:5px 12px;border:1px solid rgba(255,255,255,0.2);border-radius:5px;" %>
         <% end %>

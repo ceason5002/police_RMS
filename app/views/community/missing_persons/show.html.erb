@@ -1,0 +1,35 @@
+<% content_for :title, "Missing Person — Case ##{@incident.id}" %>
+
+<section class="comm-page-header">
+  <div class="comm-container">
+    <h1>Missing Person — Active Case</h1>
+  </div>
+</section>
+
+<div class="comm-container" style="padding:32px 0 48px;max-width:700px;">
+  <div class="comm-detail-card">
+    <div class="comm-detail-row">
+      <span class="comm-detail-label">Status</span>
+      <span class="comm-badge comm-badge--red">Active — Ongoing Investigation</span>
+    </div>
+    <div class="comm-detail-row">
+      <span class="comm-detail-label">Last Known Area</span>
+      <span><%= @incident.city %>, <%= @incident.state %></span>
+    </div>
+    <div class="comm-detail-row">
+      <span class="comm-detail-label">Date Reported</span>
+      <span><%= @incident.occurred_at.strftime("%B %-d, %Y") %></span>
+    </div>
+    <% if @incident.narrative.present? %>
+      <div class="comm-detail-row comm-detail-row--full">
+        <span class="comm-detail-label">Case Summary</span>
+        <p style="margin-top:6px;line-height:1.6;"><%= @incident.narrative %></p>
+      </div>
+    <% end %>
+  </div>
+
+  <div style="margin-top:24px;display:flex;gap:12px;">
+    <%= link_to "Submit Anonymous Tip", new_community_tip_path, class: "comm-btn-primary" %>
+    <%= link_to "Back to Missing Persons", community_missing_persons_path, class: "comm-btn-ghost" %>
+  </div>
+</div>

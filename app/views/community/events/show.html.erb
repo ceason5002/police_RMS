@@ -1,0 +1,36 @@
+<% content_for :title, @event.title %>
+
+<section class="comm-page-header">
+  <div class="comm-container">
+    <span class="comm-event-type-badge" style="margin-bottom:10px;display:inline-block;"><%= @event.event_type %></span>
+    <h1><%= @event.title %></h1>
+  </div>
+</section>
+
+<div class="comm-container" style="padding:32px 0 48px;max-width:700px;">
+  <div class="comm-detail-card">
+    <div class="comm-detail-row">
+      <span class="comm-detail-label">Date</span>
+      <span><%= @event.starts_at.strftime("%A, %B %-d, %Y") %></span>
+    </div>
+    <div class="comm-detail-row">
+      <span class="comm-detail-label">Time</span>
+      <span><%= @event.starts_at.strftime("%-I:%M %p") %><% if @event.ends_at %> – <%= @event.ends_at.strftime("%-I:%M %p") %><% end %></span>
+    </div>
+    <% if @event.location.present? %>
+      <div class="comm-detail-row">
+        <span class="comm-detail-label">Location</span>
+        <span><%= @event.location %></span>
+      </div>
+    <% end %>
+    <% if @event.description.present? %>
+      <div class="comm-detail-row comm-detail-row--full">
+        <span class="comm-detail-label">Details</span>
+        <div style="margin-top:6px;line-height:1.7;"><%= simple_format(@event.description) %></div>
+      </div>
+    <% end %>
+  </div>
+  <div style="margin-top:24px;">
+    <%= link_to "Back to Events", community_events_path, class: "comm-btn-ghost" %>
+  </div>
+</div>

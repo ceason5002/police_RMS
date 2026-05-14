@@ -1,0 +1,72 @@
+<% content_for :title, "Active BOLOs" %>
+
+<section class="comm-page-header">
+  <div class="comm-container">
+    <h1>Be On the Lookout Notices</h1>
+    <p>Active public safety notices issued by the department. If you see any of the described subjects or vehicles, do not approach — call <strong>911</strong>.</p>
+  </div>
+</section>
+
+<div class="comm-container" style="padding:32px 0 48px;">
+  <% if @active_bolos.any? %>
+    <h2 class="comm-subsection-title">Active Notices (<%= @active_bolos.size %>)</h2>
+    <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:40px;">
+      <% @active_bolos.each do |bolo| %>
+        <div class="comm-bolo-card">
+          <div class="comm-bolo-card-header">
+            <span class="comm-badge comm-badge--red">ACTIVE BOLO</span>
+            <span class="comm-bolo-date">Issued: <%= bolo.created_at.strftime("%B %-d, %Y at %-I:%M %p") %></span>
+            <% if bolo.expires_at %>
+              <span class="comm-bolo-expires">Expires: <%= bolo.expires_at.strftime("%b %-d at %-I:%M %p") %></span>
+            <% end %>
+          </div>
+          <% if bolo.subject_description.present? %>
+            <div class="comm-bolo-field">
+              <span class="comm-bolo-field-label">Subject:</span>
+              <span><%= bolo.subject_description %></span>
+            </div>
+          <% end %>
+          <% if bolo.vehicle_description.present? %>
+            <div class="comm-bolo-field">
+              <span class="comm-bolo-field-label">Vehicle:</span>
+              <span><%= bolo.vehicle_description %></span>
+            </div>
+          <% end %>
+          <% if bolo.last_known_location.present? %>
+            <div class="comm-bolo-field">
+              <span class="comm-bolo-field-label">Last Known Location:</span>
+              <span><%= bolo.last_known_location %></span>
+            </div>
+          <% end %>
+          <div style="margin-top:12px;">
+            <%= link_to "Submit a Tip About This", new_community_tip_path, class: "comm-btn-outline comm-btn-sm" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="comm-empty-state">
+      <h3>No Active BOLOs</h3>
+      <p>There are no active Be On the Lookout notices at this time.</p>
+    </div>
+  <% end %>
+
+  <% if @past_bolos.any? %>
+    <h2 class="comm-subsection-title" style="color:#94A3B8;">Recently Resolved Notices</h2>
+    <div class="comm-table-wrap">
+      <table class="comm-table">
+        <thead><tr><th>Subject</th><th>Vehicle</th><th>Issued</th><th>Status</th></tr></thead>
+        <tbody>
+          <% @past_bolos.each do |bolo| %>
+            <tr>
+              <td><%= bolo.subject_description&.truncate(60) || "—" %></td>
+              <td><%= bolo.vehicle_description&.truncate(50) || "—" %></td>
+              <td style="font-size:12px;color:#94A3B8;"><%= bolo.created_at.strftime("%m/%d/%Y") %></td>
+              <td><span class="comm-badge comm-badge--green">Resolved</span></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>

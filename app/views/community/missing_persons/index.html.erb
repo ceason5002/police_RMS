@@ -1,0 +1,37 @@
+<% content_for :title, "Missing Persons" %>
+
+<section class="comm-page-header">
+  <div class="comm-container">
+    <h1>Missing Persons</h1>
+    <p>Active missing persons cases. If you have information, please submit an anonymous tip or call <strong>(555) 555-0100</strong>.</p>
+  </div>
+</section>
+
+<div class="comm-container" style="padding:32px 0 48px;">
+  <% if @cases.any? %>
+    <div class="comm-cards-3">
+      <% @cases.each do |inc| %>
+        <div class="comm-mp-card">
+          <div class="comm-mp-header">
+            <span class="comm-badge comm-badge--red">Active Case</span>
+            <span class="comm-mp-date">Reported: <%= inc.occurred_at.strftime("%b %-d, %Y") %></span>
+          </div>
+          <div class="comm-mp-type">Missing Person</div>
+          <div class="comm-mp-area"><%= inc.city %>, <%= inc.state %></div>
+          <div class="comm-mp-actions">
+            <%= link_to "View Details", community_missing_person_path(inc), class: "comm-btn-primary comm-btn-sm" %>
+            <%= link_to "Submit Tip", new_community_tip_path, class: "comm-btn-outline comm-btn-sm" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="comm-empty-state">
+      <div class="comm-empty-icon">
+        <svg width="48" height="48" fill="none" stroke="#94A3B8" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M5.2 21a7 7 0 0 1 13.6 0"/></svg>
+      </div>
+      <h3>No Active Missing Persons Cases</h3>
+      <p>There are currently no active missing persons reports.</p>
+    </div>
+  <% end %>
+</div>
