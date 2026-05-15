@@ -1,0 +1,51 @@
+<% content_for :title, "Complaint Intake" %>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+  <h1 style="font-size:20px;font-weight:700;color:#0F172A;margin:0;">Complaint Intake</h1>
+  <%= link_to "+ Log Complaint", new_admin_officer_complaint_path, style: "background:#635BFF;color:#fff;padding:8px 16px;border-radius:6px;text-decoration:none;font-size:13px;font-weight:600;" %>
+</div>
+
+<div style="background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:12px 16px;margin-bottom:16px;display:flex;gap:10px;align-items:center;">
+  <%= form_with url: admin_officer_complaints_path, method: :get, data: { turbo: false } do |f| %>
+    <%= f.select :status, OfficerComplaint::STATUSES.map { |s| [s, s] }, { include_blank: "All Statuses" }, style: "border:1px solid #CBD5E1;border-radius:6px;padding:6px 10px;font-size:13px;" %>
+    <%= f.submit "Filter", style: "background:#1E293B;color:#fff;border:none;padding:6px 14px;border-radius:6px;font-size:13px;cursor:pointer;" %>
+    <%= link_to "Clear", admin_officer_complaints_path, style: "font-size:13px;color:#64748B;" %>
+  <% end %>
+</div>
+
+<div style="background:#fff;border:1px solid #E2E8F0;border-radius:8px;overflow:hidden;">
+  <table style="width:100%;border-collapse:collapse;font-size:13px;">
+    <thead>
+      <tr style="background:#F8FAFC;border-bottom:1px solid #E2E8F0;">
+        <th style="padding:10px 16px;text-align:left;font-weight:600;color:#475569;">Received</th>
+        <th style="padding:10px 16px;text-align:left;font-weight:600;color:#475569;">Complainant</th>
+        <th style="padding:10px 16px;text-align:left;font-weight:600;color:#475569;">Type</th>
+        <th style="padding:10px 16px;text-align:left;font-weight:600;color:#475569;">Officer Named</th>
+        <th style="padding:10px 16px;text-align:left;font-weight:600;color:#475569;">Status</th>
+        <th style="padding:10px 16px;text-align:left;font-weight:600;color:#475569;">Investigator</th>
+        <th style="padding:10px 16px;"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @complaints.each do |c| %>
+        <tr style="border-bottom:1px solid #F1F5F9;">
+          <td style="padding:10px 16px;color:#64748B;white-space:nowrap;"><%= c.received_at.strftime("%b %-d, %Y") %></td>
+          <td style="padding:10px 16px;"><%= c.complainant_name.presence || "<em style='color:#94A3B8;'>Anonymous</em>".html_safe %></td>
+          <td style="padding:10px 16px;color:#64748B;"><%= c.complaint_type %></td>
+          <td style="padding:10px 16px;"><%= c.officer&.full_name || "—" %></td>
+          <td style="padding:10px 16px;">
+            <% color = { "New" => "#2563EB", "Under Investigation" => "#D97706", "Sustained" => "#DC2626", "Not Sustained" => "#16A34A", "Exonerated" => "#16A34A", "Unfounded" => "#64748B", "Closed" => "#64748B" }[c.status] || "#64748B" %>
+            <span style="background:#{color}1A;color:#{color};padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;"><%= c.status %></span>
+          </td>
+          <td style="padding:10px 16px;color:#64748B;"><%= c.assigned_investigator.presence || "—" %></td>
+          <td style="padding:10px 16px;display:flex;gap:8px;">
+            <%= link_to "View", admin_officer_complaint_path(c), style: "font-size:12px;color:#635BFF;" %>
+            <%= link_to "Edit", edit_admin_officer_complaint_path(c), style: "font-size:12px;color:#64748B;" %>
+          </td>
+        </tr>
+      <% end %>
+      <% if @complaints.empty? %>
+        <tr><td colspan="7" style="padding:32px;text-align:center;color:#94A3B8;">No complaints on record.</td></tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

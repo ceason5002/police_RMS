@@ -3,6 +3,8 @@ class Officer < ApplicationRecord
   has_many :units, through: :officer_units
   has_many :led_cases, class_name: "CrimeCase", foreign_key: :lead_officer_id
   has_one  :user, dependent: :nullify
+  has_many :officer_trainings, dependent: :destroy
+  has_many :officer_complaints, dependent: :nullify
 
   validates :badge_number, presence: true, uniqueness: true
   validates :first_name, :last_name, :rank, presence: true

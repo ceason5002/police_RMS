@@ -1,0 +1,60 @@
+<% content_for :title, "Training Tracker" %>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+  <h1 style="font-size:20px;font-weight:700;color:#0F172A;margin:0;">Training Tracker</h1>
+  <%= link_to "+ Add Record", new_admin_officer_training_path, style: "background:#635BFF;color:#fff;padding:8px 16px;border-radius:6px;text-decoration:none;font-size:13px;font-weight:600;" %>
+</div>
+
+<div style="background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:16px;margin-bottom:16px;display:flex;gap:12px;flex-wrap:wrap;">
+  <%= form_with url: admin_officer_trainings_path, method: :get, data: { turbo: false } do |f| %>
+    <%= f.select :officer_id, options_from_collection_for_select(@officers, :id, :full_name, params[:officer_id]),
+        { include_blank: "All Officers" }, style: "border:1px solid #CBD5E1;border-radius:6px;padding:6px 10px;font-size:13px;" %>
+    <%= f.select :training_type, OfficerTraining::TRAINING_TYPES.map { |t| [t, t] },
+        { include_blank: "All Types" }, style: "border:1px solid #CBD5E1;border-radius:6px;padding:6px 10px;font-size:13px;" %>
+    <%= f.select :status, OfficerTraining::STATUSES.map { |s| [s, s] },
+        { include_blank: "All Statuses" }, style: "border:1px solid #CBD5E1;border-radius:6px;padding:6px 10px;font-size:13px;" %>
+    <%= f.submit "Filter", style: "background:#1E293B;color:#fff;border:none;padding:6px 14px;border-radius:6px;font-size:13px;cursor:pointer;" %>
+    <%= link_to "Clear", admin_officer_trainings_path, style: "font-size:13px;color:#64748B;" %>
+  <% end %>
+</div>
+
+<div style="background:#fff;border:1px solid #E2E8F0;border-radius:8px;overflow:hidden;">
+  <table style="width:100%;border-collapse:collapse;font-size:13px;">
+    <thead>
+      <tr style="background:#F8FAFC;border-bottom:1px solid #E2E8F0;">
+        <th style="padding:10px 16px;text-align:left;font-weight:600;color:#475569;">Officer</th>
+        <th style="padding:10px 16px;text-align:left;font-weight:600;color:#475569;">Title</th>
+        <th style="padding:10px 16px;text-align:left;font-weight:600;color:#475569;">Type</th>
+        <th style="padding:10px 16px;text-align:left;font-weight:600;color:#475569;">Status</th>
+        <th style="padding:10px 16px;text-align:left;font-weight:600;color:#475569;">Completed</th>
+        <th style="padding:10px 16px;text-align:left;font-weight:600;color:#475569;">Expires</th>
+        <th style="padding:10px 16px;text-align:left;font-weight:600;color:#475569;">Hours</th>
+        <th style="padding:10px 16px;"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @trainings.each do |t| %>
+        <tr style="border-bottom:1px solid #F1F5F9;">
+          <td style="padding:10px 16px;font-weight:500;"><%= t.officer.full_name %></td>
+          <td style="padding:10px 16px;"><%= t.title %></td>
+          <td style="padding:10px 16px;color:#64748B;"><%= t.training_type %></td>
+          <td style="padding:10px 16px;">
+            <% color = { "Completed" => "#16A34A", "Scheduled" => "#2563EB", "Expired" => "#DC2626", "Waived" => "#64748B" }[t.status] || "#64748B" %>
+            <span style="background:#{color}1A;color:#{color};padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;"><%= t.status %></span>
+          </td>
+          <td style="padding:10px 16px;color:#64748B;"><%= t.completed_on&.strftime("%b %-d, %Y") || "—" %></td>
+          <td style="padding:10px 16px;color:<%= t.expires_on && t.expires_on < Date.today ? '#DC2626' : '#64748B' %>;">
+            <%= t.expires_on&.strftime("%b %-d, %Y") || "—" %>
+          </td>
+          <td style="padding:10px 16px;color:#64748B;"><%= t.hours&.to_s || "—" %></td>
+          <td style="padding:10px 16px;display:flex;gap:8px;">
+            <%= link_to "Edit", edit_admin_officer_training_path(t), style: "font-size:12px;color:#635BFF;" %>
+            <%= button_to "Delete", admin_officer_training_path(t), method: :delete, data: { turbo_confirm: "Delete this record?" }, style: "font-size:12px;color:#DC2626;background:none;border:none;cursor:pointer;padding:0;" %>
+          </td>
+        </tr>
+      <% end %>
+      <% if @trainings.empty? %>
+        <tr><td colspan="8" style="padding:32px;text-align:center;color:#94A3B8;">No training records found.</td></tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

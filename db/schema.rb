@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_14_100006) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_15_155525) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -207,6 +207,36 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_14_100006) do
     t.index ["incident_id"], name: "index_evidences_on_incident_id"
   end
 
+  create_table "fleet_logs", force: :cascade do |t|
+    t.decimal "cost", precision: 8, scale: 2
+    t.datetime "created_at", null: false
+    t.string "description", null: false
+    t.integer "fleet_vehicle_id", null: false
+    t.string "log_type", null: false
+    t.datetime "logged_at", null: false
+    t.integer "mileage"
+    t.text "notes"
+    t.string "performed_by"
+    t.datetime "updated_at", null: false
+    t.index ["fleet_vehicle_id"], name: "index_fleet_logs_on_fleet_vehicle_id"
+  end
+
+  create_table "fleet_vehicles", force: :cascade do |t|
+    t.string "color"
+    t.datetime "created_at", null: false
+    t.integer "current_mileage", default: 0
+    t.string "make", null: false
+    t.string "model", null: false
+    t.text "notes"
+    t.string "status", default: "Active", null: false
+    t.string "unit_number", null: false
+    t.datetime "updated_at", null: false
+    t.string "vin"
+    t.integer "year", null: false
+    t.index ["status"], name: "index_fleet_vehicles_on_status"
+    t.index ["unit_number"], name: "index_fleet_vehicles_on_unit_number", unique: true
+  end
+
   create_table "incidents", force: :cascade do |t|
     t.string "city"
     t.datetime "created_at", null: false
@@ -235,6 +265,39 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_14_100006) do
     t.string "status", default: "Draft", null: false
     t.string "title", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "officer_complaints", force: :cascade do |t|
+    t.string "assigned_investigator"
+    t.string "complainant_contact"
+    t.string "complainant_name"
+    t.string "complaint_type", null: false
+    t.datetime "created_at", null: false
+    t.text "description", null: false
+    t.date "incident_date"
+    t.text "internal_notes"
+    t.integer "officer_id"
+    t.datetime "received_at", null: false
+    t.string "status", default: "New", null: false
+    t.datetime "updated_at", null: false
+    t.index ["officer_id"], name: "index_officer_complaints_on_officer_id"
+    t.index ["status"], name: "index_officer_complaints_on_status"
+  end
+
+  create_table "officer_trainings", force: :cascade do |t|
+    t.date "completed_on"
+    t.datetime "created_at", null: false
+    t.date "expires_on"
+    t.decimal "hours", precision: 5, scale: 2
+    t.string "instructor"
+    t.text "notes"
+    t.integer "officer_id", null: false
+    t.string "status", default: "Scheduled", null: false
+    t.string "title", null: false
+    t.string "training_type", null: false
+    t.datetime "updated_at", null: false
+    t.index ["officer_id"], name: "index_officer_trainings_on_officer_id"
+    t.index ["status"], name: "index_officer_trainings_on_status"
   end
 
   create_table "officer_units", force: :cascade do |t|
@@ -336,6 +399,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_14_100006) do
   add_foreign_key "call_units", "cad_units"
   add_foreign_key "community_requests", "incidents"
   add_foreign_key "evidences", "incidents"
+  add_foreign_key "fleet_logs", "fleet_vehicles"
+  add_foreign_key "officer_complaints", "officers"
+  add_foreign_key "officer_trainings", "officers"
   add_foreign_key "officer_units", "officers"
   add_foreign_key "officer_units", "units"
   add_foreign_key "unit_status_logs", "cad_units"

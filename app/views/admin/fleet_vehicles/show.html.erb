@@ -1,0 +1,79 @@
+<% content_for :title, @vehicle.display_name %>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+  <div>
+    <div style="font-size:12px;color:#64748B;margin-bottom:4px;"><%= link_to "Fleet", admin_fleet_vehicles_path, style: "color:#635BFF;" %> / <%= @vehicle.unit_number %></div>
+    <h1 style="font-size:20px;font-weight:700;color:#0F172A;margin:0;"><%= @vehicle.display_name %></h1>
+  </div>
+  <%= link_to "Edit Vehicle", edit_admin_fleet_vehicle_path(@vehicle), style: "background:#F1F5F9;color:#374151;padding:8px 14px;border-radius:6px;text-decoration:none;font-size:13px;font-weight:500;" %>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 2fr;gap:20px;">
+  <div style="background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:20px;">
+    <div style="font-size:12px;font-weight:600;color:#94A3B8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:14px;">Vehicle Info</div>
+    <% [["Unit Number", @vehicle.unit_number], ["Make", @vehicle.make], ["Model", @vehicle.model], ["Year", @vehicle.year], ["Color", @vehicle.color.presence || "—"], ["VIN", @vehicle.vin.presence || "—"], ["Status", @vehicle.status], ["Current Mileage", "#{number_with_delimiter(@vehicle.current_mileage)} mi"]].each do |label, val| %>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #F8FAFC;font-size:13px;">
+        <span style="color:#64748B;"><%= label %></span>
+        <span style="font-weight:500;"><%= val %></span>
+      </div>
+    <% end %>
+    <% if @vehicle.notes.present? %>
+      <div style="margin-top:12px;font-size:13px;color:#374151;"><%= @vehicle.notes %></div>
+    <% end %>
+  </div>
+
+  <div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <div style="font-size:15px;font-weight:600;color:#0F172A;">Log Entries</div>
+    </div>
+
+    <div style="background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:20px;margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:600;color:#94A3B8;text-transform:uppercase;margin-bottom:12px;">Add Log Entry</div>
+      <%= form_with model: [:admin, @vehicle, @new_log], style: "display:flex;flex-direction:column;gap:10px;" do |f| %>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <%= f.select :log_type, FleetLog::LOG_TYPES, { include_blank: "Type..." }, style: "border:1px solid #CBD5E1;border-radius:6px;padding:7px 10px;font-size:13px;" %>
+          <%= f.datetime_local_field :logged_at, value: Time.current.strftime("%Y-%m-%dT%H:%M"), style: "border:1px solid #CBD5E1;border-radius:6px;padding:7px 10px;font-size:13px;" %>
+        </div>
+        <%= f.text_field :description, placeholder: "Description *", style: "width:100%;border:1px solid #CBD5E1;border-radius:6px;padding:7px 10px;font-size:13px;box-sizing:border-box;" %>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+          <%= f.number_field :mileage, placeholder: "Mileage", style: "border:1px solid #CBD5E1;border-radius:6px;padding:7px 10px;font-size:13px;" %>
+          <%= f.number_field :cost, placeholder: "Cost ($)", step: "0.01", style: "border:1px solid #CBD5E1;border-radius:6px;padding:7px 10px;font-size:13px;" %>
+          <%= f.text_field :performed_by, placeholder: "Performed by", style: "border:1px solid #CBD5E1;border-radius:6px;padding:7px 10px;font-size:13px;" %>
+        </div>
+        <%= f.text_area :notes, placeholder: "Notes (optional)", rows: 2, style: "width:100%;border:1px solid #CBD5E1;border-radius:6px;padding:7px 10px;font-size:13px;box-sizing:border-box;resize:vertical;" %>
+        <%= f.submit "Add Entry", style: "background:#635BFF;color:#fff;border:none;padding:8px 18px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;align-self:flex-start;" %>
+      <% end %>
+    </div>
+
+    <div style="background:#fff;border:1px solid #E2E8F0;border-radius:8px;overflow:hidden;">
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead>
+          <tr style="background:#F8FAFC;border-bottom:1px solid #E2E8F0;">
+            <th style="padding:8px 14px;text-align:left;font-weight:600;color:#475569;">Date</th>
+            <th style="padding:8px 14px;text-align:left;font-weight:600;color:#475569;">Type</th>
+            <th style="padding:8px 14px;text-align:left;font-weight:600;color:#475569;">Description</th>
+            <th style="padding:8px 14px;text-align:left;font-weight:600;color:#475569;">Mileage</th>
+            <th style="padding:8px 14px;text-align:left;font-weight:600;color:#475569;">Cost</th>
+            <th style="padding:8px 14px;"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @logs.each do |log| %>
+            <tr style="border-bottom:1px solid #F1F5F9;">
+              <td style="padding:8px 14px;color:#64748B;white-space:nowrap;"><%= log.logged_at.strftime("%b %-d, %Y") %></td>
+              <td style="padding:8px 14px;"><span style="background:#F1F5F9;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:600;"><%= log.log_type %></span></td>
+              <td style="padding:8px 14px;"><%= log.description %><% if log.performed_by.present? %><br><span style="color:#94A3B8;font-size:11px;"><%= log.performed_by %></span><% end %></td>
+              <td style="padding:8px 14px;color:#64748B;"><%= log.mileage ? "#{number_with_delimiter(log.mileage)} mi" : "—" %></td>
+              <td style="padding:8px 14px;color:#64748B;"><%= log.cost ? number_to_currency(log.cost) : "—" %></td>
+              <td style="padding:8px 14px;">
+                <%= button_to "✕", admin_fleet_vehicle_fleet_log_path(@vehicle, log), method: :delete, data: { turbo_confirm: "Delete this log entry?" }, style: "background:none;border:none;color:#DC2626;cursor:pointer;font-size:12px;" %>
+              </td>
+            </tr>
+          <% end %>
+          <% if @logs.empty? %>
+            <tr><td colspan="6" style="padding:24px;text-align:center;color:#94A3B8;">No log entries yet.</td></tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

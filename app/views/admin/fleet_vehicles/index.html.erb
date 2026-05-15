@@ -1,0 +1,50 @@
+<% content_for :title, "Fleet Vehicles" %>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+  <h1 style="font-size:20px;font-weight:700;color:#0F172A;margin:0;">Fleet Management</h1>
+  <%= link_to "+ Add Vehicle", new_admin_fleet_vehicle_path, style: "background:#635BFF;color:#fff;padding:8px 16px;border-radius:6px;text-decoration:none;font-size:13px;font-weight:600;" %>
+</div>
+
+<div style="background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:12px 16px;margin-bottom:16px;display:flex;gap:10px;align-items:center;">
+  <%= form_with url: admin_fleet_vehicles_path, method: :get, data: { turbo: false } do |f| %>
+    <%= f.select :status, FleetVehicle::STATUSES.map { |s| [s, s] }, { include_blank: "All Statuses" }, style: "border:1px solid #CBD5E1;border-radius:6px;padding:6px 10px;font-size:13px;" %>
+    <%= f.submit "Filter", style: "background:#1E293B;color:#fff;border:none;padding:6px 14px;border-radius:6px;font-size:13px;cursor:pointer;" %>
+    <%= link_to "Clear", admin_fleet_vehicles_path, style: "font-size:13px;color:#64748B;" %>
+  <% end %>
+</div>
+
+<div style="background:#fff;border:1px solid #E2E8F0;border-radius:8px;overflow:hidden;">
+  <table style="width:100%;border-collapse:collapse;font-size:13px;">
+    <thead>
+      <tr style="background:#F8FAFC;border-bottom:1px solid #E2E8F0;">
+        <th style="padding:10px 16px;text-align:left;font-weight:600;color:#475569;">Unit</th>
+        <th style="padding:10px 16px;text-align:left;font-weight:600;color:#475569;">Vehicle</th>
+        <th style="padding:10px 16px;text-align:left;font-weight:600;color:#475569;">VIN</th>
+        <th style="padding:10px 16px;text-align:left;font-weight:600;color:#475569;">Status</th>
+        <th style="padding:10px 16px;text-align:left;font-weight:600;color:#475569;">Mileage</th>
+        <th style="padding:10px 16px;"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @vehicles.each do |v| %>
+        <tr style="border-bottom:1px solid #F1F5F9;">
+          <td style="padding:10px 16px;font-weight:600;"><%= v.unit_number %></td>
+          <td style="padding:10px 16px;"><%= "#{v.year} #{v.make} #{v.model}" %><% if v.color.present? %> <span style="color:#94A3B8;">· <%= v.color %></span><% end %></td>
+          <td style="padding:10px 16px;color:#64748B;font-family:monospace;font-size:12px;"><%= v.vin.presence || "—" %></td>
+          <td style="padding:10px 16px;">
+            <% color = { "Active" => "#16A34A", "Out of Service" => "#DC2626", "Retired" => "#64748B" }[v.status] || "#64748B" %>
+            <span style="background:#{color}1A;color:#{color};padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;"><%= v.status %></span>
+          </td>
+          <td style="padding:10px 16px;color:#64748B;"><%= number_with_delimiter(v.current_mileage) %> mi</td>
+          <td style="padding:10px 16px;display:flex;gap:10px;">
+            <%= link_to "Logs", admin_fleet_vehicle_path(v), style: "font-size:12px;color:#635BFF;" %>
+            <%= link_to "Edit", edit_admin_fleet_vehicle_path(v), style: "font-size:12px;color:#64748B;" %>
+            <%= button_to "Delete", admin_fleet_vehicle_path(v), method: :delete, data: { turbo_confirm: "Remove this vehicle?" }, style: "font-size:12px;color:#DC2626;background:none;border:none;cursor:pointer;padding:0;" %>
+          </td>
+        </tr>
+      <% end %>
+      <% if @vehicles.empty? %>
+        <tr><td colspan="6" style="padding:32px;text-align:center;color:#94A3B8;">No vehicles in fleet.</td></tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

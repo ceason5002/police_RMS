@@ -1,4 +1,8 @@
 puts "Clearing existing data..."
+OfficerComplaint.destroy_all
+FleetLog.destroy_all
+FleetVehicle.destroy_all
+OfficerTraining.destroy_all
 AlertSubscription.destroy_all
 CommunityRequest.destroy_all
 CommunityTip.destroy_all
@@ -548,6 +552,74 @@ spotlight.update!(
   spotlight_bio: "Officer #{spotlight.first_name} #{spotlight.last_name} joined the Memphis Police Department #{rand(3..12)} years ago and has consistently demonstrated outstanding dedication to community service. Known for building trust with residents in their patrol district through proactive community engagement, #{spotlight.first_name} recently received recognition for their work with the department's youth outreach initiative. When not on duty, #{spotlight.first_name} volunteers with the local food bank and coaches youth athletics. We are proud to recognize #{spotlight.first_name} as this month's Officer of the Month."
 )
 
+# ── 12. Internal Admin Data ───────────────────────────────────────────────────
+puts "Seeding internal admin data..."
+
+officers = Officer.all.to_a
+
+# Training records
+training_data = [
+  { training_type: "Firearms",         title: "Annual Firearms Qualification",     status: "Completed", hours: 8,  completed_on: 60.days.ago,  expires_on: 305.days.from_now },
+  { training_type: "First Aid / CPR",  title: "CPR / AED Recertification",         status: "Completed", hours: 4,  completed_on: 90.days.ago,  expires_on: 275.days.from_now },
+  { training_type: "De-escalation",    title: "Crisis De-escalation Techniques",   status: "Completed", hours: 16, completed_on: 120.days.ago, expires_on: nil },
+  { training_type: "Use of Force",     title: "Use of Force Policy Update",        status: "Completed", hours: 4,  completed_on: 45.days.ago,  expires_on: nil },
+  { training_type: "Legal Updates",    title: "Search & Seizure Law Review",       status: "Scheduled", hours: 8,  completed_on: nil,          expires_on: nil },
+  { training_type: "Defensive Driving","title": "Emergency Vehicle Operations",    status: "Scheduled", hours: 8,  completed_on: nil,          expires_on: nil },
+  { training_type: "Cybersecurity",    title: "Department IT Security Awareness",  status: "Completed", hours: 2,  completed_on: 30.days.ago,  expires_on: 335.days.from_now },
+  { training_type: "Firearms",         title: "Low-Light Firearms Training",       status: "Expired",   hours: 4,  completed_on: 400.days.ago, expires_on: 35.days.ago },
+]
+
+training_data.each do |td|
+  OfficerTraining.create!(td.merge(officer: officers.sample, instructor: "#{FIRST_NAMES.sample} #{LAST_NAMES.sample}"))
+end
+
+# Fleet vehicles
+fleet = [
+  { unit_number: "P-101", make: "Ford",       model: "Explorer",    year: 2022, color: "White",    status: "Active",          current_mileage: 42_350, vin: "1FM5K8AR9NGA00101" },
+  { unit_number: "P-102", make: "Ford",       model: "Explorer",    year: 2022, color: "White",    status: "Active",          current_mileage: 38_920, vin: "1FM5K8AR9NGA00102" },
+  { unit_number: "P-103", make: "Chevrolet",  model: "Tahoe",       year: 2021, color: "Black",    status: "Active",          current_mileage: 61_400, vin: "1GNSKCKC7MR003103" },
+  { unit_number: "P-104", make: "Ford",       model: "Explorer",    year: 2020, color: "White",    status: "Out of Service",  current_mileage: 89_210, vin: "1FM5K8AR9LGA00104" },
+  { unit_number: "K9-1",  make: "Ford",       model: "Explorer",    year: 2021, color: "Black",    status: "Active",          current_mileage: 55_600, vin: "1FM5K8AR9MGA00201" },
+  { unit_number: "D-201", make: "Chevrolet",  model: "Impala",      year: 2019, color: "Silver",   status: "Active",          current_mileage: 74_100, vin: "2G1105SA0K9201001" },
+  { unit_number: "D-202", make: "Ford",       model: "Fusion",      year: 2020, color: "Dark Blue", status: "Active",         current_mileage: 58_300, vin: "3FA6P0HD5LR202001" },
+  { unit_number: "CMD-1", make: "Chevrolet",  model: "Suburban",    year: 2023, color: "Black",    status: "Active",          current_mileage: 18_500, vin: "1GNSKJKC8PR300101" },
+]
+
+vehicles = fleet.map { |v| FleetVehicle.create!(v) }
+
+# Fleet log entries
+log_types = ["Mileage Check", "Maintenance", "Fuel", "Inspection"]
+vehicles.each do |v|
+  rand(2..4).times do
+    FleetLog.create!(
+      fleet_vehicle: v,
+      log_type:      log_types.sample,
+      description:   ["Oil change and filter replacement", "Tire rotation", "Brake inspection", "Fuel fill-up", "Routine inspection", "Windshield wiper replacement"].sample,
+      logged_at:     rand(1..90).days.ago,
+      mileage:       v.current_mileage - rand(500..8000),
+      cost:          [nil, rand(30..400).to_f].sample,
+      performed_by:  ["Fleet Maintenance Dept.", "#{FIRST_NAMES.sample} #{LAST_NAMES.sample}", "City Auto Service"].sample
+    )
+  end
+end
+
+# Complaints
+complaint_data = [
+  { complaint_type: "Rudeness / Unprofessional Conduct", description: "Complainant states the officer was dismissive and used a condescending tone during a traffic stop. Officer did not provide badge number when requested.", status: "Under Investigation", assigned_investigator: "Lt. #{LAST_NAMES.sample}", received_at: 10.days.ago },
+  { complaint_type: "Use of Force",                      description: "Complainant alleges excessive force was used during an arrest. Complainant states they were compliant at all times and sustained a bruised wrist.", status: "Under Investigation", assigned_investigator: "Capt. #{LAST_NAMES.sample}", received_at: 20.days.ago },
+  { complaint_type: "Procedure Violation",               description: "Officer allegedly failed to follow proper procedure when conducting a vehicle search. Complainant states no probable cause was established.", status: "Not Sustained",        assigned_investigator: "Lt. #{LAST_NAMES.sample}", received_at: 45.days.ago },
+  { complaint_type: "Discrimination",                    description: "Complainant believes they were stopped based solely on their appearance and that the officer made discriminatory remarks.", status: "New",                 assigned_investigator: nil, received_at: 2.days.ago },
+]
+
+complaint_data.each do |cd|
+  OfficerComplaint.create!(cd.merge(
+    complainant_name:    "#{FIRST_NAMES.sample} #{LAST_NAMES.sample}",
+    complainant_contact: "(555) #{rand(100..999)}-#{rand(1000..9999)}",
+    incident_date:       cd[:received_at] - rand(1..5).days,
+    officer:             officers.sample
+  ))
+end
+
 puts ""
 puts "Done! Seeded:"
 puts "  #{Officer.count}         officers"
@@ -563,6 +635,9 @@ puts "  #{CadCall.count}         CAD calls"
 puts "  #{Bolo.count}            BOLOs"
 puts "  #{NewsPost.count}        news posts"
 puts "  #{CommunityEvent.count}  community events"
+puts "  #{OfficerTraining.count} training records"
+puts "  #{FleetVehicle.count}    fleet vehicles"
+puts "  #{OfficerComplaint.count} complaints"
 puts "  #{User.count}            users"
 puts ""
 puts "Admin login:      M1234 / Admin1234!"

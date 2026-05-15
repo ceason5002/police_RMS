@@ -72,6 +72,11 @@ Rails.application.routes.draw do
     resources :community_events
     resources :alert_subscriptions, only: [:index, :destroy]
     resources :spotlights, only: [:index, :update]
+    resources :officer_trainings
+    resources :fleet_vehicles do
+      resources :fleet_logs, only: [:create, :destroy]
+    end
+    resources :officer_complaints
   end
 
   # Community portal (public)

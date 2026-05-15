@@ -39,6 +39,11 @@
           <%= admin_nav_link "🔔", "Alert Subs",      admin_alert_subscriptions_path %>
           <%= admin_nav_link "⭐", "Spotlight",       admin_spotlights_path %>
 
+          <div style="color:rgba(255,255,255,0.3);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;padding:16px 10px 6px;">Internal Admin</div>
+          <%= admin_nav_link "🎓", "Training",        admin_officer_trainings_path %>
+          <%= admin_nav_link "🚗", "Fleet",           admin_fleet_vehicles_path %>
+          <%= admin_nav_link "📋", "Complaints",      admin_officer_complaints_path %>
+
           <div style="color:rgba(255,255,255,0.3);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;padding:16px 10px 6px;">System</div>
           <%= admin_nav_link "🔑", "User Access",     admin_users_path %>
           <%= admin_nav_link "📜", "Audit Log",       admin_audit_logs_path %>
