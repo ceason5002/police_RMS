@@ -3,7 +3,25 @@ class IncidentsController < ApplicationController
 
   # GET /incidents or /incidents.json
   def index
-    @incidents = Incident.all
+    @incidents = Incident.order(occurred_at: :desc)
+    @incidents = @incidents.where("report_number LIKE ?", "%#{params[:report_number]}%") if params[:report_number].present?
+    @incidents = @incidents.where(incident_type: params[:incident_type])                 if params[:incident_type].present?
+    @incidents = @incidents.where(status: params[:status])                               if params[:status].present?
+    if params[:location].present?
+      term = "%#{params[:location]}%"
+      @incidents = @incidents.where(
+        "street_address LIKE ? OR city LIKE ? OR state LIKE ? OR zip_code LIKE ?",
+        term, term, term, term
+      )
+    end
+    if params[:occurred_date].present?
+      begin
+        day = Date.parse(params[:occurred_date])
+        @incidents = @incidents.where(occurred_at: day.beginning_of_day..day.end_of_day)
+      rescue ArgumentError
+        nil
+      end
+    end
   end
 
   # GET /incidents/1 or /incidents/1.json

@@ -5,6 +5,30 @@
   <%= link_to "New Incident", new_incident_path, class: "btn btn-primary" %>
 </div>
 
+<div class="table-card" style="margin-bottom:16px;padding:16px 20px;">
+  <%= form_with url: incidents_path, method: :get, local: true, style: "display:flex;align-items:center;gap:12px;flex-wrap:wrap;" do |f| %>
+    <%= f.text_field :report_number, value: params[:report_number], placeholder: "Report #",
+          style: "font-size:13px;padding:6px 10px;border:1px solid #D1D5DB;border-radius:6px;" %>
+    <%= f.select :incident_type,
+          Incident::INCIDENT_TYPES.map { |t| [t, t] },
+          { selected: params[:incident_type], include_blank: "All Types" },
+          class: "btn btn-secondary btn-sm", style: "font-weight:400;" %>
+    <%= f.select :status,
+          [["Open", "Open"], ["Under Investigation", "Under Investigation"], ["Closed", "Closed"]],
+          { selected: params[:status], include_blank: "All Statuses" },
+          class: "btn btn-secondary btn-sm", style: "font-weight:400;" %>
+    <%= f.text_field :location, value: params[:location], placeholder: "Location (address, city, state, ZIP)",
+          style: "font-size:13px;padding:6px 10px;border:1px solid #D1D5DB;border-radius:6px;min-width:220px;" %>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <label style="font-size:13px;font-weight:500;">Occurred</label>
+      <%= f.date_field :occurred_date, value: params[:occurred_date],
+            style: "font-size:13px;padding:6px 10px;border:1px solid #D1D5DB;border-radius:6px;" %>
+    </div>
+    <%= f.submit "Filter", class: "btn btn-primary btn-sm" %>
+    <%= link_to "Clear", incidents_path, class: "btn btn-secondary btn-sm" %>
+  <% end %>
+</div>
+
 <div class="table-card">
   <table class="rms-table">
     <thead>
@@ -19,7 +43,7 @@
     </thead>
     <tbody>
       <% if @incidents.empty? %>
-        <tr><td colspan="6"><div class="empty-state"><p>No incidents recorded yet.</p></div></td></tr>
+        <tr><td colspan="6"><div class="empty-state"><p><%= params.slice(:report_number, :incident_type, :status, :location, :occurred_date).values.any?(&:present?) ? "No incidents match your filters." : "No incidents recorded yet." %></p></div></td></tr>
       <% else %>
         <% @incidents.each do |incident| %>
           <tr>
