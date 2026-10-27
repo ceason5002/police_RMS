@@ -5,6 +5,23 @@
   <%= link_to "New Vehicle", new_vehicle_path, class: "btn btn-primary" %>
 </div>
 
+<div class="table-card" style="margin-bottom:16px;padding:16px 20px;">
+  <%= form_with url: vehicles_path, method: :get, local: true, style: "display:flex;align-items:center;gap:12px;flex-wrap:wrap;" do |f| %>
+    <%= f.text_field :plate_number, value: params[:plate_number], placeholder: "Plate #",
+          style: "font-size:13px;padding:6px 10px;border:1px solid #D1D5DB;border-radius:6px;" %>
+    <%= f.select :make,
+          @vehicle_makes.map { |m| [m, m] },
+          { selected: params[:make], include_blank: "All Makes" },
+          class: "btn btn-secondary btn-sm", style: "font-weight:400;" %>
+    <%= f.text_field :color, value: params[:color], placeholder: "Color",
+          style: "font-size:13px;padding:6px 10px;border:1px solid #D1D5DB;border-radius:6px;" %>
+    <%= f.text_field :owner_name, value: params[:owner_name], placeholder: "Owner name",
+          style: "font-size:13px;padding:6px 10px;border:1px solid #D1D5DB;border-radius:6px;" %>
+    <%= f.submit "Filter", class: "btn btn-primary btn-sm" %>
+    <%= link_to "Clear", vehicles_path, class: "btn btn-secondary btn-sm" %>
+  <% end %>
+</div>
+
 <div class="table-card">
   <table class="rms-table">
     <thead>
@@ -18,7 +35,7 @@
     </thead>
     <tbody>
       <% if @vehicles.empty? %>
-        <tr><td colspan="5"><div class="empty-state"><p>No vehicles on record.</p></div></td></tr>
+        <tr><td colspan="5"><div class="empty-state"><p><%= params.slice(:plate_number, :make, :color, :owner_name).values.any?(&:present?) ? "No vehicles match your filters." : "No vehicles on record." %></p></div></td></tr>
       <% else %>
         <% @vehicles.each do |vehicle| %>
           <tr>

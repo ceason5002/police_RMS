@@ -3,7 +3,18 @@ class EvidencesController < ApplicationController
 
   # GET /evidences or /evidences.json
   def index
-    @evidences = Evidence.all
+    @evidences = Evidence.order(collected_at: :desc).includes(:incident)
+    @evidences = @evidences.where("evidence_number LIKE ?", "%#{params[:evidence_number]}%") if params[:evidence_number].present?
+    @evidences = @evidences.where(status: params[:status]) if params[:status].present?
+    @evidences = @evidences.where("location_stored LIKE ?", "%#{params[:location_stored]}%") if params[:location_stored].present?
+    if params[:collected_date].present?
+      begin
+        day = Date.parse(params[:collected_date])
+        @evidences = @evidences.where(collected_at: day.beginning_of_day..day.end_of_day)
+      rescue ArgumentError
+        nil
+      end
+    end
   end
 
   # GET /evidences/1 or /evidences/1.json

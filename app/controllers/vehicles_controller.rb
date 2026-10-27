@@ -3,7 +3,15 @@ class VehiclesController < ApplicationController
 
   # GET /vehicles or /vehicles.json
   def index
-    @vehicles = Vehicle.all
+    @vehicles = Vehicle.order(:plate_number).includes(:person)
+    @vehicles = @vehicles.where("plate_number LIKE ?", "%#{params[:plate_number]}%") if params[:plate_number].present?
+    @vehicles = @vehicles.where(make: params[:make]) if params[:make].present?
+    @vehicles = @vehicles.where("color LIKE ?", "%#{params[:color]}%") if params[:color].present?
+    if params[:owner_name].present?
+      term = "%#{params[:owner_name]}%"
+      @vehicles = @vehicles.joins(:person).where("people.first_name LIKE ? OR people.last_name LIKE ?", term, term)
+    end
+    @vehicle_makes = Vehicle.distinct.where.not(make: nil).order(:make).pluck(:make)
   end
 
   # GET /vehicles/1 or /vehicles/1.json

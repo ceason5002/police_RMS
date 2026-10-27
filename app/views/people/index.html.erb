@@ -5,6 +5,22 @@
   <%= link_to "New Person", new_person_path, class: "btn btn-primary" %>
 </div>
 
+<div class="table-card" style="margin-bottom:16px;padding:16px 20px;">
+  <%= form_with url: people_path, method: :get, local: true, style: "display:flex;align-items:center;gap:12px;flex-wrap:wrap;" do |f| %>
+    <%= f.text_field :name, value: params[:name], placeholder: "Name",
+          style: "font-size:13px;padding:6px 10px;border:1px solid #D1D5DB;border-radius:6px;" %>
+    <%= f.text_field :location, value: params[:location], placeholder: "Location (address, city, state, ZIP)",
+          style: "font-size:13px;padding:6px 10px;border:1px solid #D1D5DB;border-radius:6px;min-width:220px;" %>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <label style="font-size:13px;font-weight:500;">Date of Birth</label>
+      <%= f.date_field :date_of_birth, value: params[:date_of_birth],
+            style: "font-size:13px;padding:6px 10px;border:1px solid #D1D5DB;border-radius:6px;" %>
+    </div>
+    <%= f.submit "Filter", class: "btn btn-primary btn-sm" %>
+    <%= link_to "Clear", people_path, class: "btn btn-secondary btn-sm" %>
+  <% end %>
+</div>
+
 <div class="table-card">
   <table class="rms-table">
     <thead>
@@ -18,7 +34,7 @@
     </thead>
     <tbody>
       <% if @people.empty? %>
-        <tr><td colspan="5"><div class="empty-state"><p>No persons on record.</p></div></td></tr>
+        <tr><td colspan="5"><div class="empty-state"><p><%= params.slice(:name, :location, :date_of_birth).values.any?(&:present?) ? "No persons match your filters." : "No persons on record." %></p></div></td></tr>
       <% else %>
         <% @people.each do |person| %>
           <tr>

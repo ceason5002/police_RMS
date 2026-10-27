@@ -3,7 +3,14 @@ class OfficersController < ApplicationController
 
   # GET /officers or /officers.json
   def index
-    @officers = Officer.all
+    @officers = Officer.order(:last_name, :first_name)
+    @officers = @officers.where("badge_number LIKE ?", "%#{params[:badge_number]}%") if params[:badge_number].present?
+    if params[:name].present?
+      term = "%#{params[:name]}%"
+      @officers = @officers.where("first_name LIKE ? OR last_name LIKE ?", term, term)
+    end
+    @officers = @officers.where(rank: params[:rank]) if params[:rank].present?
+    @officers = @officers.where(active: params[:active] == "true") if params[:active].present?
   end
 
   # GET /officers/1 or /officers/1.json

@@ -5,6 +5,24 @@
   <%= link_to "New Arrest", new_arrest_path, class: "btn btn-primary" %>
 </div>
 
+<div class="table-card" style="margin-bottom:16px;padding:16px 20px;">
+  <%= form_with url: arrests_path, method: :get, local: true, style: "display:flex;align-items:center;gap:12px;flex-wrap:wrap;" do |f| %>
+    <%= f.text_field :incident_number, value: params[:incident_number], placeholder: "Incident #",
+          style: "font-size:13px;padding:6px 10px;border:1px solid #D1D5DB;border-radius:6px;" %>
+    <%= f.text_field :person_name, value: params[:person_name], placeholder: "Person name",
+          style: "font-size:13px;padding:6px 10px;border:1px solid #D1D5DB;border-radius:6px;" %>
+    <%= f.text_field :charges, value: params[:charges], placeholder: "Charges",
+          style: "font-size:13px;padding:6px 10px;border:1px solid #D1D5DB;border-radius:6px;min-width:180px;" %>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <label style="font-size:13px;font-weight:500;">Arrested</label>
+      <%= f.date_field :arrested_date, value: params[:arrested_date],
+            style: "font-size:13px;padding:6px 10px;border:1px solid #D1D5DB;border-radius:6px;" %>
+    </div>
+    <%= f.submit "Filter", class: "btn btn-primary btn-sm" %>
+    <%= link_to "Clear", arrests_path, class: "btn btn-secondary btn-sm" %>
+  <% end %>
+</div>
+
 <div class="table-card">
   <table class="rms-table">
     <thead>
@@ -18,7 +36,7 @@
     </thead>
     <tbody>
       <% if @arrests.empty? %>
-        <tr><td colspan="5"><div class="empty-state"><p>No arrests on record.</p></div></td></tr>
+        <tr><td colspan="5"><div class="empty-state"><p><%= params.slice(:incident_number, :person_name, :charges, :arrested_date).values.any?(&:present?) ? "No arrests match your filters." : "No arrests on record." %></p></div></td></tr>
       <% else %>
         <% @arrests.each do |arrest| %>
           <tr>

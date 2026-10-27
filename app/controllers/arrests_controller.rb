@@ -3,7 +3,23 @@ class ArrestsController < ApplicationController
 
   # GET /arrests or /arrests.json
   def index
-    @arrests = Arrest.all
+    @arrests = Arrest.order(arrested_at: :desc).includes(:incident, :person)
+    if params[:incident_number].present?
+      @arrests = @arrests.joins(:incident).where("incidents.report_number LIKE ?", "%#{params[:incident_number]}%")
+    end
+    if params[:person_name].present?
+      term = "%#{params[:person_name]}%"
+      @arrests = @arrests.joins(:person).where("people.first_name LIKE ? OR people.last_name LIKE ?", term, term)
+    end
+    @arrests = @arrests.where("charges LIKE ?", "%#{params[:charges]}%") if params[:charges].present?
+    if params[:arrested_date].present?
+      begin
+        day = Date.parse(params[:arrested_date])
+        @arrests = @arrests.where(arrested_at: day.beginning_of_day..day.end_of_day)
+      rescue ArgumentError
+        nil
+      end
+    end
   end
 
   # GET /arrests/1 or /arrests/1.json

@@ -5,6 +5,26 @@
   <%= link_to "New Evidence", new_evidence_path, class: "btn btn-primary" %>
 </div>
 
+<div class="table-card" style="margin-bottom:16px;padding:16px 20px;">
+  <%= form_with url: evidences_path, method: :get, local: true, style: "display:flex;align-items:center;gap:12px;flex-wrap:wrap;" do |f| %>
+    <%= f.text_field :evidence_number, value: params[:evidence_number], placeholder: "Evidence #",
+          style: "font-size:13px;padding:6px 10px;border:1px solid #D1D5DB;border-radius:6px;" %>
+    <%= f.select :status,
+          Evidence::STATUSES.map { |s| [s, s] },
+          { selected: params[:status], include_blank: "All Statuses" },
+          class: "btn btn-secondary btn-sm", style: "font-weight:400;" %>
+    <%= f.text_field :location_stored, value: params[:location_stored], placeholder: "Location stored",
+          style: "font-size:13px;padding:6px 10px;border:1px solid #D1D5DB;border-radius:6px;min-width:180px;" %>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <label style="font-size:13px;font-weight:500;">Collected</label>
+      <%= f.date_field :collected_date, value: params[:collected_date],
+            style: "font-size:13px;padding:6px 10px;border:1px solid #D1D5DB;border-radius:6px;" %>
+    </div>
+    <%= f.submit "Filter", class: "btn btn-primary btn-sm" %>
+    <%= link_to "Clear", evidences_path, class: "btn btn-secondary btn-sm" %>
+  <% end %>
+</div>
+
 <div class="table-card">
   <table class="rms-table">
     <thead>
@@ -19,7 +39,7 @@
     </thead>
     <tbody>
       <% if @evidences.empty? %>
-        <tr><td colspan="6"><div class="empty-state"><p>No evidence on record.</p></div></td></tr>
+        <tr><td colspan="6"><div class="empty-state"><p><%= params.slice(:evidence_number, :status, :location_stored, :collected_date).values.any?(&:present?) ? "No evidence matches your filters." : "No evidence on record." %></p></div></td></tr>
       <% else %>
         <% @evidences.each do |evidence| %>
           <tr>

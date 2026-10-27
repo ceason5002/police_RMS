@@ -3,7 +3,25 @@ class PeopleController < ApplicationController
 
   # GET /people or /people.json
   def index
-    @people = Person.all
+    @people = Person.order(:last_name, :first_name)
+    if params[:name].present?
+      term = "%#{params[:name]}%"
+      @people = @people.where("first_name LIKE ? OR last_name LIKE ?", term, term)
+    end
+    if params[:location].present?
+      term = "%#{params[:location]}%"
+      @people = @people.where(
+        "street_address LIKE ? OR city LIKE ? OR state LIKE ? OR zip_code LIKE ?",
+        term, term, term, term
+      )
+    end
+    if params[:date_of_birth].present?
+      begin
+        @people = @people.where(date_of_birth: Date.parse(params[:date_of_birth]))
+      rescue ArgumentError
+        nil
+      end
+    end
   end
 
   # GET /people/1 or /people/1.json
